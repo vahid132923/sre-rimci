@@ -407,7 +407,7 @@ spec:
 
   
     - repoURL: {{ .Values.spec.source.helmURL }}
-      targetRevision: 8.7.1
+      targetRevision: 9.3.2
       chart: gitlab
       helm:
         values: |-
