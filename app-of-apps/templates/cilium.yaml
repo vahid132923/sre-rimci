@@ -43,11 +43,11 @@ spec:
         hubble:
           enabled: false
           relay:
-            enabled: true
+            enabled: false
             image:
               repository: "{{ .Values.spec.registry }}/cilium/hubble-relay"
           ui:
-            enabled: true
+            enabled: false
             backend:
               image:
                 repository: "{{ .Values.spec.registry }}/cilium/hubble-ui-backend"
