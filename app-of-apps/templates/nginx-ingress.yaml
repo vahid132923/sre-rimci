@@ -31,6 +31,8 @@ spec:
           image:
             registry: {{ .Values.spec.registry }}
             digest: ""
+          config:
+            force-ssl-redirect: "true"            
           admissionWebhooks:
               enabled: false
               patch:
@@ -59,7 +61,9 @@ spec:
             name: public
             enabled: true
             default: false
-            controllerValue: "k8s.io/public-ingress-nginx"                     
+            controllerValue: "k8s.io/public-ingress-nginx" 
+          config:
+            force-ssl-redirect: "true"                                
           image:
             registry: {{ .Values.spec.registry }}
             digest: ""  

@@ -534,10 +534,10 @@ spec:
               enabled: false
               
             hosts:
-              domain: git.tools.dorsa.dev
+              domain: git.rimci.dev
               externalIP: ""
               gitlab:
-                name: git.tools.dorsa.dev
+                name: git.rimci.dev
                 https: false
               hostSuffix: null
               https: false
@@ -546,12 +546,10 @@ spec:
               install: false
               configureCertmanager: false
               class: nginx
-              annotations:
-                 acme.cert-manager.io/http01-edit-in-place: 'true'
-                 cert-manager.io/cluster-issuer: letsencrypt-cloudns              
+              annotations:             
                  nginx.ingress.kubernetes.io/proxy-body-size: "0"
               tls:
-               enabled: true
+               enabled: false
                secretName: gitlab-acme-issuer 
             initialRootPassword:
               secret: gitlab-root-password
@@ -607,19 +605,19 @@ spec:
           hostAliases:
           - ip: "192.168.208.11"
             hostnames:
-            - "git.tools.dorsa.dev"
+            - "git.rimci.dev"
           image:
             registry: {{ .Values.spec.registry }}
             image: gitlab-org/gitlab-runner
           replicas: 5
-          gitlabUrl: https://git.tools.dorsa.dev
+          gitlabUrl: https://git.rimci.dev
           runnerToken: glrt-Bx6muND4FmTZJAvnHAMy
           concurrent: 10
           runners:
             config: |
               [[runners]]
-                 url = "https://git.tools.dorsa.dev"
-                 clone_url = "https://git.tools.dorsa.dev" 
+                 url = "https://git.rimci.dev"
+                 clone_url = "https://git.rimci.dev" 
                 [runners.kubernetes]
                   namespace = "gitlab"
                   image = "{{ .Values.spec.registry }}/dockerhub/arielkv/dind-glibc:latest"
