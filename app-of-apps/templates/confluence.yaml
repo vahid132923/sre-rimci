@@ -24,7 +24,7 @@ spec:
       values: |-
         global:
           imageRegistry: "{{ .Values.spec.registry }}/"
-          storageClass: "local-sc"
+          storageClass: "k8s-lvm-sc"
         image:
            repository: haxqer/confluence
            tag: 8.9.7
@@ -102,7 +102,7 @@ spec:
           logLevel: warning
           storage:
             size: 5Gi
-            storageClass: "local-sc"
+            storageClass: "k8s-lvm-sc"
           resources:
             limits:
               cpu: '1'
@@ -152,7 +152,7 @@ spec:
                     monthly: 0
                     yearly: 0
                   copyMethod: Direct
-                  storageClassName: local-sc
+                  storageClassName: k8s-lvm-sc
 
   - repoURL: '{{ .Values.spec.source.helmURL }}'
     targetRevision: "13.2.12"

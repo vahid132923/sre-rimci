@@ -363,7 +363,7 @@ spec:
             logLevel: warning
             storage:
               size: 70Gi
-              storageClass: "local-sc"
+              storageClass: "k8s-lvm-sc"
             resources:
               limits:
                 cpu: '1'
@@ -437,7 +437,7 @@ spec:
                 enabled: true
                 accessMode: ReadWriteOnce
                 size: 10Gi
-                storageClass: local-sc
+                storageClass: k8s-lvm-sc
               replicas: 1
             gitlab-shell:
               enabled: true
@@ -454,7 +454,7 @@ spec:
             gitaly:
               persistence:
                 enabled: true
-                storageClass: local-sc
+                storageClass: k8s-lvm-sc
                 accessMode: ReadWriteOnce
                 size: 10Gi
               image:
@@ -587,7 +587,7 @@ spec:
           redis:
             install: true
             global:
-              storageClass: local-sc
+              storageClass: k8s-lvm-sc
           registry:
             enabled: true
             image:

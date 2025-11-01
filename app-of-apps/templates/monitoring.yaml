@@ -47,7 +47,7 @@ spec:
                  storage:
                     volumeClaimTemplate:
                        spec:
-                         storageClassName: "local-sc"  
+                         storageClassName: "k8s-lvm-sc"  
                          resources:
                             requests:
                                storage: 40Gi
@@ -64,7 +64,7 @@ spec:
                  storage:
                     volumeClaimTemplate:
                        spec:
-                         storageClassName: "local-sc"   
+                         storageClassName: "k8s-lvm-sc"   
                          resources:
                             requests:
                                storage: 5Gi
@@ -199,7 +199,7 @@ spec:
            adminPassword: 55UItzBingDjcbEzr5Tz09ETcHMU6imT3h7Oyxm0   
            persistence:
              enabled: true
-             storageClassName: local-sc
+             storageClassName: k8s-lvm-sc
              size: 5Gi  
            initChownData:
              enabled: false

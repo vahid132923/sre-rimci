@@ -80,7 +80,7 @@ spec:
           postgresqlUsername: postgres
           global:
             imageRegistry: "{{ .Values.spec.registry }}"
-            storageClass: "local-sc"
+            storageClass: "k8s-lvm-sc"
             postgresql:
               auth:
                 postgresPassword: "fI4Pwn77SXKKnuqZzifWiefpwnuEiB"
@@ -102,7 +102,7 @@ spec:
           logLevel: warning
           storage:
             size: 20Gi
-            storageClass: "local-sc"
+            storageClass: "k8s-lvm-sc"
           resources:
             limits:
               cpu: '1'

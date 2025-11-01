@@ -31,7 +31,7 @@ spec:
           logLevel: warning
           storage:
             size: 60Gi
-            storageClass: "local-sc"
+            storageClass: "k8s-lvm-sc"
           resources:
             limits:
               cpu: '2'
@@ -119,13 +119,13 @@ spec:
                # log.cleanup.policy: delete
              # broker:
              #   persistence:
-             #     storageClass: local-sc
+             #     storageClass: k8s-lvm-sc
              #     size: 10Gi
              controller:
                replicaCount: 1
                persistence:
                  enabled: true
-                 storageClass: local-sc
+                 storageClass: k8s-lvm-sc
                  size: 20Gi
            redis:
              image:
