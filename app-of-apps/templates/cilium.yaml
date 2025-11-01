@@ -31,7 +31,7 @@ spec:
             repository: "{{ .Values.spec.registry }}/cilium/operator"
         kubeProxyReplacement: true
         k8sServicePort: 6443
-        k8sServiceHost: 172.30.13.240
+        k8sServiceHost: 172.16.14.240
         k8sClientRateLimit:
           qps: 20
           burst: 100
