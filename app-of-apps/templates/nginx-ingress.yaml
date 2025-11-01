@@ -30,6 +30,7 @@ spec:
           #  default-ssl-certificate: "nginx/letsencrypttls"
           image:
             registry: {{ .Values.spec.registry }}
+            digest: ""
           admissionWebhooks:
               enabled: false
               patch:
@@ -61,6 +62,7 @@ spec:
             controllerValue: "k8s.io/public-ingress-nginx"                     
           image:
             registry: {{ .Values.spec.registry }}
+            digest: ""  
           admissionWebhooks:
               enabled: false
               patch:
