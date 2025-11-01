@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-500"
+  name: {{ .Values.spec.env }}-topolvm
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: topolvm
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=orphan
+      - ServerSideApply=true
+  source:
+    repoURL: 'https://topolvm.github.io/topolvm/'
+    targetRevision: "15.7.0"
+    chart: "topolvm"
+    helm:
+      values: |
+         image:
+           repository: {{ .Values.spec.registry }}/topolvm/topolvm-with-sidecar
+         controller:
+           storageCapacityTracking:
+             enabled: true
+         scheduler:
+           enabled: false
+         webhook:
+           podMutatingWebhook:
+             enabled: false
+         podSecurityPolicy:
+           create: false
+         lvmd:
+           deviceClasses:
+           - name: vg_k8s
+             volume-group: vg_k8s
+             spare-gb: 2
+         storageClasses:
+         - name: k8s-lvm-sc
+           storageClass:
+             fsType: xfs
+             isDefaultClass: true
+             reclaimPolicy: Retain
+             volumeBindingMode: WaitForFirstConsumer
+             allowVolumeExpansion: true
+             additionalParameters:
+               "topolvm.io/device-class": "vg_k8s"
