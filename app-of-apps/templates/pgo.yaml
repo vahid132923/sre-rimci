@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: pgo
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: pgo
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+
+  source:
+    repoURL: 'https://github.com/CrunchyData/postgres-operator-examples.git'
+    targetRevision: main
+    path: helm/install
+    helm:
+      values: |
+         controllerImages:
+           cluster: {{ .Values.spec.registry }}/crunchydata/postgres-operator:ubi8-5.6.0-0
+         relatedImages:
+           postgres_16:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres:ubi8-16.3-1
+           postgres_16_gis_3.4:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres-gis:ubi8-16.3-3.4-1
+           postgres_16_gis_3.3:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres-gis:ubi8-16.3-3.3-1
+           postgres_15:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres:ubi8-15.7-1
+           postgres_15_gis_3.3:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres-gis:ubi8-15.7-3.3-1
+           pgadmin:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-pgadmin4:ubi8-4.30-26
+           pgbackrest:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-pgbackrest:ubi8-2.51-1
+           pgbouncer:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-pgbouncer:ubi8-1.22-1
+           pgexporter:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-postgres-exporter:ubi8-0.15.0-7
+           pgupgrade:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-upgrade:ubi8-5.6.0-0
+           standalone_pgadmin:
+             image: {{ .Values.spec.registry }}/crunchydata/crunchy-pgadmin4:ubi8-8.6-1        

@@ -1,0 +1,167 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: glitchtip
+  namespace: argocd
+spec:
+  destination:
+    namespace: glitchtip
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: 0.1.0
+    chart: glitchtip
+    helm:
+      values: |-
+        fullnameOverride: glitchtip
+        image:
+          repository: {{ .Values.spec.registry }}/glitchtip/glitchtip
+          tag: v4.2.1
+        env:
+          normal:
+            GLITCHTIP_DOMAIN: https://errortracking.dorsa.dev
+            ENABLE_USER_REGISTRATION: True
+            ENABLE_ORGANIZATION_CREATION: True
+            UWSGI_LISTEN: 1024
+            EMAIL_URL: "smtp://admin:7ySK49L%3F%26%244p%3BKS@mail.dorsafamily.ir:25"
+          secret:
+            SECRET_KEY: fI4Pwn77SXKKnuqZzifWiefpwnuEiB
+            DATABASE_URL: "postgresql://postgres:dHojBJveU2dOcWHVq99KfhaAaSA3guFy2OYPHiIbR4tSj4eEQa07yBqUsZzcA7qy@glitchtip-cluster-rw.glitchtip:5432/glitchtip"
+        worker:
+          resources: 
+             limits:
+               memory: 2Gi
+               cpu: 1
+             requests:
+               memory: 2Gi
+               cpu: 1
+        web:
+          replicaCount: 1
+          ingress:
+            enabled: true
+            className: public
+            #annotations:
+            #    nginx.ingress.kubernetes.io/use-regex: "true"
+            #    nginx.ingress.kubernetes.io/rewrite-target: /api/$1
+            hosts:
+              - host: errortracking.dorsa.dev
+                paths:
+                   - path: /
+                     pathType: ImplementationSpecific                  
+                #  - path: /api/
+                #    pathType: Prefix
+                #  - path: /profile/
+                #    pathType: Prefix                    
+                    
+            tls:
+             - secretName: errortracking-acme-issuer
+               hosts:
+                 - errortracking.dorsa.dev   
+          budget: {}
+        redis:
+         enabled: true
+         global:
+           imageRegistry: {{ .Values.spec.registry }}
+         auth:
+          password: fI4Pwn77SXKKnuqZzifWiefpwnuEiB  
+        postgresql:
+          enabled: false
+          fullnameOverride: postgres
+          postgresqlPassword: "fI4Pwn77SXKKnuqZzifWiefpwnuEiB"
+          postgresqlUsername: postgres
+          global:
+            imageRegistry: "{{ .Values.spec.registry }}"
+            storageClass: "local-sc"
+            postgresql:
+              auth:
+                postgresPassword: "fI4Pwn77SXKKnuqZzifWiefpwnuEiB"
+                database: "glitchtip"   
+          primary:
+            persistence:
+              size: 20Gi  
+
+  - repoURL: 'https://cloudnative-pg.io/charts'
+    targetRevision: 0.0.8
+    chart: cluster
+    helm:
+      values: |-
+        cluster:
+          instances: 1
+          annotations:
+            cnpg.io/skipWalArchiving: "enabled"
+          imageName: {{ .Values.spec.registry }}/cloudnative-pg/postgresql:16.1
+          logLevel: warning
+          storage:
+            size: 20Gi
+            storageClass: "local-sc"
+          resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          initdb:
+            database: glitchtip
+          logLevel: "debug"    
+        backups:
+          enabled: false
+          destinationPath: ""
+          endpointURL: http://192.168.200.100:6000
+          immediate: true
+          secret:
+            create: false
+          provider: s3
+          s3:
+            region: "minio"
+            bucket: "gitlab"
+            path: "/db"
+            accessKey: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+            secretKey: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+          wal:
+             compression: ''
+             encryption: ''
+          data:
+            compression: 'gzip'
+            encryption: ''
+            additionalCommandArgs:
+              - "--min-chunk-size=5MB"
+              - "--read-timeout=60"
+              - "-vv"               
+          retentionPolicy: "15d"    
+          scheduledBackups:
+             - name: gitlab-backup
+               backupOwnerReference: self
+               schedule: "0 0 */6 * * *" 
+               method: barmanObjectStore
+                
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    chart: 'ingress'
+    targetRevision: 0.1.0
+    helm:
+      values: |-
+         service:
+           name: "glitchtip-web"
+           port: 80
+         
+         ingress:
+           enabled: true
+           className: "nginx"
+           annotations: {}
+           hosts:
+             - host: glitchtip.tools.dorsa.dev
+               paths:
+                 - path: /
+                   pathType: ImplementationSpecific
+           tls: []
+           
+                  

@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: cloudnative-pg
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: cloudnative-pg
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+
+  source:
+    path: ''
+    repoURL: 'https://cloudnative-pg.io/charts'
+    targetRevision: 0.21.5
+    chart: cloudnative-pg
+    helm:
+      values: |
+        image:
+          repository: {{ .Values.spec.registry }}/cloudnative-pg/cloudnative-pg

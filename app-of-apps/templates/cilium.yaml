@@ -1,0 +1,84 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-700"
+  name: cilium
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: kube-system
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  source:
+    repoURL: 'https://helm.cilium.io/'
+    targetRevision: 1.18.3
+    chart: cilium
+    helm:
+      values: |
+        image:
+          repository: "{{ .Values.spec.registry }}/cilium/cilium"
+        operator:
+          image:
+            repository: "{{ .Values.spec.registry }}/cilium/operator"
+        kubeProxyReplacement: true
+        k8sServicePort: 6443
+        k8sServiceHost: 172.30.13.240
+        k8sClientRateLimit:
+          qps: 20
+          burst: 100
+        l2announcements:
+          enabled: true
+          leaseDuration: 3s
+          leaseRenewDeadline: 1s
+          leaseRetryPeriod: 200ms
+        hubble:
+          enabled: false
+          relay:
+            enabled: true
+            image:
+              repository: "{{ .Values.spec.registry }}/cilium/hubble-relay"
+          ui:
+            enabled: true
+            backend:
+              image:
+                repository: "{{ .Values.spec.registry }}/cilium/hubble-ui-backend"
+            frontend:
+              image:
+                repository: "{{ .Values.spec.registry }}/cilium/hubble-ui"
+        ingressController:
+          enabled: false
+          default: false
+          #service:
+          #  annotations:
+          #     kube-vip.io/ignore: true
+          #     "io.cilium/lb-ipam-ips": "192.168.208.11"      
+        gatewayAPI:
+          enabled: true
+        #enableIPv4BIGTCP: true
+        bpf:
+          masquerade: true
+          hostLegacyRouting: false
+        externalIPs:
+          enabled: true
+        rollOutCiliumPods: true
+        endpointRoutes:
+          enabled: true
+        ipam:
+          operator:
+            clusterPoolIPv4PodCIDRList: ["172.200.0.0/16"]
+        ipv4NativeRoutingCIDR: "172.200.0.0/16"
+        # routingMode: "native"
+        # autoDirectNodeRoutes: true
+        # hostPort:
+        #   enabled: false
+        # nodePort:
+        #   enabled: false

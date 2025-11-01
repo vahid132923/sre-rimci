@@ -1,0 +1,46 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-700"
+  name: {{ .Values.spec.env }}-cert-manager
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: cert-manager
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:
+  - path: 'clusterissuer'
+    targetRevision: HEAD
+    repoURL: '{{ .Values.spec.source.repoURL }}'  
+     
+  - repoURL: 'https://charts.jetstack.io'
+    targetRevision: 1.16.2
+    chart: cert-manager
+    helm:
+      values: |
+        crds:
+          enabled: true
+        image:
+           repository: {{ .Values.spec.registry }}/jetstack/cert-manager-controller  
+        webhook:
+           image:
+             repository: {{ .Values.spec.registry }}/jetstack/cert-manager-webhook           
+        cainjector:
+           image:
+             repository: {{ .Values.spec.registry }}/jetstack/cert-manager-cainjector
+        acmesolver:
+           image:
+                 repository: {{ .Values.spec.registry }}/jetstack/cert-manager-acmesolver
+        startupapicheck:
+           image:
+                 repository: {{ .Values.spec.registry }}/jetstack/cert-manager-startupapicheck

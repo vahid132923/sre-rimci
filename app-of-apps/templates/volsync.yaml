@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: volsync
+  namespace: argocd
+spec:
+  destination:
+    namespace: volsync
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: 0.11.0
+    chart: volsync 
+    helm:
+      values: |-
+         replicaCount: 1
+         securityContext:
+           allowPrivilegeEscalation: true
+         podSecurityContext: 
+             runAsNonRoot: false
+             runAsUser: 0
+         image:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+           pullPolicy: IfNotPresent
+         rclone:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+         restic:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+         rsync:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+         rsync-tls:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+         syncthing:
+           repository: {{ .Values.spec.registry }}/backube/volsync
+         kuberbacproxy:
+             image: {{ .Values.spec.registry }}/brancz/kube-rbac-proxy:v0.18.0
+         manageCRDs: true
+         resources:
+           limits:
+             cpu: 1000m
+             memory: 1Gi
+           requests:
+             cpu: 100m
+             memory: 64Mi
+        
+
+                  

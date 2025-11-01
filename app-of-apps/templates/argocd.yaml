@@ -1,0 +1,101 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: argocd
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:
+  - repoURL: 'https://argoproj.github.io/argo-helm'
+    targetRevision: 9.0.5
+    chart: argo-cd
+    helm:
+      values: |-
+        global:
+          image:
+             repository: {{ .Values.spec.registry }}/argoproj/argocd
+          domain: delivery.rimci.dev 
+        dex:
+          image:
+            repository: {{ .Values.spec.registry }}/dexidp/dex
+        redis:
+          image:
+            repository: {{ .Values.spec.registry }}/redis
+        configs:
+           cm:
+             "exec.enabled": true
+             timeout.reconciliation.jitter: 0
+             timeout.reconciliation: 0
+             oidc.config: |
+               name: Keycloak
+               issuer: https://sso.rimci.dev/auth/realms/rimci
+               clientID: argocd
+               clientSecret: 5iYy5W994MVDH7M6gfHEery8hbg6M6HU 
+               requestedScopes: ["openid", "profile", "email", "groups"] 
+               requestedIDTokenClaims:
+                 groups:
+                   essential: true  
+           secret:
+             gitlabSecret: "fI4Pwn77SXKKnuqZzifWiefpwnuEiB"                        
+           rbac:
+             policy.csv: |
+               g, ArgoCDAdmins, role:admin
+
+        server:
+          extensions:
+              enabled: true
+              image:
+                repository: {{ .Values.spec.registry }}/argoprojlabs/argocd-extension-installer
+          ingress:
+             enabled: true
+             annotations:
+               nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+             ingressClassName: "nginx"
+             hostname: delivery.rimci.dev
+             tls: false
+          service:
+            type: NodePort
+
+  - repoURL: 'https://argoproj.github.io/argo-helm'
+    targetRevision: 0.11.3
+    chart: argocd-image-updater
+    helm:
+      values: |-
+        image:
+          repository: {{ .Values.spec.registry }}/argoprojlabs/argocd-image-updater      
+        extraEnv:
+          - name: hamin_CRED
+            value: "admin:HTpIIYJgyJ3mhbNLdBF0"        
+        config:
+          registries: 
+           - name: haminregistry
+             api_url: https://docker.hamintech.ir
+             ping: yes
+             insecure: yes
+             credentials: env:hamin_CRED
+             prefix: docker.hamintech.ir 
+             credsexpire: 24h         
+          logLevel: "debug"         
+          gitCommitUser: "argo-image-updater"
+          gitCommitMail: "argo-image-updater@hamin.dev"
+          logLevel: "debug"
+        extraArgs:
+           - --interval
+           - 30s                    
+        authScripts:
+          enabled: false
+          scripts:
+            auth2.sh: |
+              #!/bin/sh
+              echo "admin:HTpIIYJgyJ3mhbNLdBF0"         

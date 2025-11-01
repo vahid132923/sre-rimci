@@ -1,0 +1,10 @@
+spec:
+  registry: docker.hamintech.ir
+  env: tools
+  destination:
+    server: https://kubernetes.default.svc
+    project: default
+  source:
+    repoURL: git@github.com:vahid132923/sre-rimci.git
+    helmURL: https://repo.hamintech.ir/repository/helmhosted
+    targetRevision: HEAD

@@ -1,0 +1,214 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: {{ .Values.spec.env }}-confluecnce
+  namespace: argocd
+spec:
+  destination:
+    namespace: confluecnce
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:                            
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: 13.2.12
+    chart: app
+    helm:
+      values: |-
+        global:
+          imageRegistry: "{{ .Values.spec.registry }}/"
+          storageClass: "local-sc"
+        image:
+           repository: haxqer/confluence
+           tag: 8.9.7
+        updateStrategy:
+           type: RollingUpdate  
+           rollingUpdate:
+             maxSurge: 25%
+             maxUnavailable: 100%              
+        containerPorts:
+          http: 8090
+        containerSecurityContext:
+            enabled: true
+            seLinuxOptions: {}
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsNonRoot: false
+            runAsUser: 0
+            runAsGroup: 0
+        readinessProbe:
+          enabled: false
+        livenessProbe:
+          enabled: false              
+        extraEnvVars:
+           - name: JVM_MINIMUM_MEMORY
+             value: 4g
+           - name: JVM_MAXIMUM_MEMORY
+             value: 4g
+           - name: CATALINA_CONNECTOR_SCHEME
+             value: "https"
+           - name: CATALINA_CONNECTOR_SECURE
+             value: "true"             
+           - name: CATALINA_OPTS
+             value: "-Dupm.plugin.upload.enabled=true"              
+        #   - name: JVM_CODE_CACHE_ARGS
+        #     value: '-XX:InitialCodeCacheSize=1g -XX:ReservedCodeCacheSize=1g' 
+        persistence:
+          enabled: true  
+          size: 10Gi
+          mountPath: /var/confluence
+        service:
+          type: ClusterIP
+          ports:
+            http: 8090
+        ingress:
+           enabled: true
+           hostname: docs.dorsa.dev
+           annotations:
+              nginx.ingress.kubernetes.io/proxy-body-size: 100m
+              nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+              nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+              nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"  
+              nginx.ingress.kubernetes.io/rewrite-target: /
+              nginx.ingress.kubernetes.io/configuration-snippet: |
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Proto $scheme;           
+           ingressClassName: public    
+           tls: true
+        resources:
+          requests:
+            cpu: 4
+            memory: 8Gi
+          limits:
+            cpu: 4
+            memory: 8Gi  
+  - repoURL: 'https://cloudnative-pg.io/charts'
+    targetRevision: 0.0.8
+    chart: cluster
+    helm:
+      values: |-
+        cluster:
+          instances: 2
+          annotations:
+            cnpg.io/skipWalArchiving: "enabled"
+          imageName: {{ .Values.spec.registry }}/cloudnative-pg/postgresql:16.1
+          logLevel: warning
+          storage:
+            size: 5Gi
+            storageClass: "local-sc"
+          resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          initdb:
+            database: confluecnce
+        backups:
+          enabled: false
+################## backup ###################
+  - repoURL: 'https://stakater.github.io/stakater-charts'
+    targetRevision: 1.0.5
+    chart: secrets
+    helm:
+      values: |-
+         Secrets:
+         - name: restic-config
+           data:
+               RESTIC_REPOSITORY: s3:http://192.168.200.100:6000/confluecnce/files
+               RESTIC_PASSWORD: my-secure-restic-password
+               AWS_ACCESS_KEY_ID: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+               AWS_SECRET_ACCESS_KEY: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+           type: Opaque          
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: 0.1.0
+    chart: 	extra-objects
+    helm:
+      values: |-
+          extraObjects:
+            - apiVersion: volsync.backube/v1alpha1
+              kind: ReplicationSource
+              metadata:
+                name: confluecnce-files-backup
+              spec:
+                sourcePVC: tools-confluecnce-app-app
+                trigger:
+                  schedule: "0 */6 * * *"
+                restic:
+                  pruneIntervalDays: 14
+                  repository: restic-config
+                  retain:
+                    hourly: 0
+                    daily: 14
+                    weekly: 0
+                    monthly: 0
+                    yearly: 0
+                  copyMethod: Direct
+                  storageClassName: local-sc
+
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: "13.2.12"
+    chart: app
+    helm:
+      values: |-
+          fullnameOverride: postgresbackup
+          global:
+            imageRegistry: {{ .Values.spec.registry }}/
+          image:
+             repository: eeshugerman/postgres-backup-s3
+             tag: 16
+          extraEnvVars:
+            - name: S3_ENDPOINT
+              value: http://192.168.200.100:6000
+            - name: SCHEDULE
+              value: '0 0 */6 * * *'
+            - name: BACKUP_KEEP_DAYS
+              value: "15"
+            - name: S3_REGION
+              value: "minio"
+            - name: S3_ACCESS_KEY_ID
+              value: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+            - name: S3_SECRET_ACCESS_KEY
+              value: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+            - name: S3_BUCKET
+              value: "confluecnce"
+            - name: S3_PREFIX
+              value: "db"
+            - name: POSTGRES_HOST
+              valueFrom:
+               secretKeyRef:
+                 name: tools-confluecnce-cluster-superuser
+                 key: host
+            - name: POSTGRES_DATABASE
+              value: confluecnce
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tools-confluecnce-cluster-superuser
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tools-confluecnce-cluster-superuser
+                  key: password           
+          livenessProbe:
+            enabled: false
+          readinessProbe:
+            enabled: false  
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 500Mi                                
+          service:
+            type: ClusterIP

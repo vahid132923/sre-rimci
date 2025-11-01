@@ -1,0 +1,128 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: {{ .Values.spec.env }}-elasticsearch-log
+  namespace: argocd
+spec:
+  destination:
+    namespace: elasticsearch-log
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:                         
+  - repoURL: 'https://helm.elastic.co'
+    targetRevision: 0.14.0
+    chart: eck-stack
+    helm:
+      values: |-
+          eck-elasticsearch:
+            fullnameOverride: "elasticsearch-log"
+            version: 8.17.0
+            image: {{ .Values.spec.registry }}/elastic/elasticsearch:8.17.0
+            http:
+              service:
+                spec:
+                  type: ClusterIP
+              tls:
+                selfSignedCertificate:
+                  disabled: true
+            nodeSets:
+            - name: hot
+              count: 3
+              config:
+                node.roles: ["data_hot","data_content","ingest","master"]
+              podTemplate:
+                spec:
+                  containers:
+                  - name: elasticsearch
+                    env:
+                    - name: ES_JAVA_OPTS
+                      value: -Xms2g -Xmx2g        
+                    resources:
+                      limits:
+                        memory: 4Gi
+                        cpu: 3
+                      requests:  
+                        memory: 4Gi
+                        cpu: 3              
+                  affinity:
+                    podAntiAffinity:
+                      preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        podAffinityTerm:
+                          labelSelector:
+                            matchLabels:
+                              elasticsearch.k8s.elastic.co/cluster-name: {{ .Values.clustername }}
+                          topologyKey: kubernetes.io/hostname
+              volumeClaimTemplates:
+              - metadata:
+                  name: elasticsearch-data
+                spec:
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 30Gi
+                  storageClassName: local-sc        
+          
+            ingress:
+              enabled: true
+              annotations: 
+                 acme.cert-manager.io/http01-edit-in-place: 'true'
+                 cert-manager.io/cluster-issuer: letsencrypt-cloudns              
+                 nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                 nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+                 nginx.ingress.kubernetes.io/proxy-send-timeout: "600"                 
+              className: nginx
+              labels: {}
+              pathType: Prefix
+              hosts:
+                - host: elastic.tools.dorsa.dev
+                  path: /
+              tls:
+                enabled: true
+          eck-kibana:
+            version: 8.17.0
+            image: {{ .Values.spec.registry }}/elastic/kibana:8.17.0
+            http:
+              service:
+                spec:
+                  type: ClusterIP
+              tls:
+                selfSignedCertificate:
+                  disabled: true
+            count: 1
+            elasticsearchRef:
+              name: elasticsearch-log
+            podTemplate:
+              spec:
+                containers:
+                - name: kibana
+                  resources:
+                    requests:
+                      memory: 2Gi
+                      cpu: 0.5
+                    limits:
+                      memory: 2Gi
+                      cpu: 2    
+            ingress:
+              enabled: true
+              annotations: 
+                  acme.cert-manager.io/http01-edit-in-place: 'true'
+                  cert-manager.io/cluster-issuer: letsencrypt-cloudns
+              className: nginx
+              labels: {}
+              pathType: Prefix
+              hosts:
+                - host: kibana.tools.dorsa.dev
+                  path: /
+              tls:
+                enabled: true              
+          

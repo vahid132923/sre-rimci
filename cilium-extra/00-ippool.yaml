@@ -1,0 +1,8 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+ name: "tools-pool"
+spec:
+ blocks:
+  - start: "172.16.14.244"
+    stop: "172.16.14.250"

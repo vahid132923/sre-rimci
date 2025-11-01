@@ -1,0 +1,283 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: sentry
+  namespace: argocd
+spec:
+  destination:
+    namespace: sentry
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+
+  sources:
+  - repoURL: 'https://cloudnative-pg.io/charts'
+    targetRevision: 0.0.8
+    chart: cluster
+    helm:
+      values: |-
+        cluster:
+          instances: 3
+          annotations:
+            cnpg.io/skipWalArchiving: "enabled"
+          imageName: {{ .Values.spec.registry }}/cloudnative-pg/postgresql:16.1
+          logLevel: warning
+          storage:
+            size: 60Gi
+            storageClass: "local-sc"
+          resources:
+            limits:
+              cpu: '2'
+              memory: 4Gi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          initdb:
+            database: sentry
+          logLevel: "debug"    
+        backups:
+          enabled: true
+          destinationPath: ""
+          endpointURL: http://192.168.200.100:6000
+          immediate: true
+          secret:
+            create: false
+          provider: s3
+          s3:
+            region: "minio"
+            bucket: "sentry"
+            path: "/db"
+            accessKey: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+            secretKey: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+          wal:
+             compression: ''
+             encryption: ''
+          data:
+            compression: 'gzip'
+            encryption: ''
+            additionalCommandArgs:
+              - "--min-chunk-size=5MB"
+              - "--read-timeout=60"
+              - "-vv"               
+          retentionPolicy: "15d"    
+          scheduledBackups:
+             - name: sentry-backup
+               backupOwnerReference: self
+               schedule: "0 0 */6 * * *" 
+               method: barmanObjectStore 
+  - repoURL: 'https://sentry-kubernetes.github.io/charts'
+    targetRevision: 26.9.1
+    chart: sentry
+    helm:
+      values: |
+           asHook: true
+           clickhouse:
+             clickhouse:
+               image: {{ .Values.spec.registry }}/clickhouse/clickhouse-server
+               # replicas: "1"
+             tabix:
+               image: {{ .Values.spec.registry }}/spoonest/clickhouse-tabix-web-client
+           zookeeper:
+             autopurge:
+               purgeInterval: 1
+               snapRetainCount: 3
+             image:
+               registry: "{{ .Values.spec.registry }}"
+               repository: bitnami/zookeeper
+           rabbitmq:
+             image:
+               registry: "{{ .Values.spec.registry }}"
+               repository: bitnami/rabbitmq
+             enabled: false
+           relay:
+             replicas: 2
+           kafka:
+             # zookeeper:
+             #   image:
+             #     registry: "{{ .Values.spec.registry }}"
+             #     repository: bitnami/zookeeper
+             image:
+               registry: "{{ .Values.spec.registry }}"
+               repository: bitnami/kafka
+             extraConfig:
+               log.retention.bytes: 134217727
+               log.segment.bytes: 134217727
+               log.retention.check.interval.ms: 20000
+               log.segment.delete.delay.ms: 1000
+               log.retention.hours: 24
+               offsets.topic.replication.factor: 1
+               transaction.state.log.replication.factor: 1
+               # auto.create.topics.enable: true
+               # log.cleaner.enable: true
+               # log.cleanup.policy: delete
+             # broker:
+             #   persistence:
+             #     storageClass: local-sc
+             #     size: 10Gi
+             controller:
+               replicaCount: 1
+               persistence:
+                 enabled: true
+                 storageClass: local-sc
+                 size: 20Gi
+           redis:
+             image:
+               registry: "{{ .Values.spec.registry }}"
+               repository: bitnami/redis
+           memcached:
+             image:
+               registry: "{{ .Values.spec.registry }}"
+               repository: bitnami/memcached
+           user:
+             create: true
+             email: admin@dorsa.dev
+             password: password
+           mail:
+             backend: dummy
+             # useTls: true
+             # useSsl: false
+             username: "username"
+             password: "password"
+             port: 587
+             host: "dorsa.dev"
+             from: "admin@dorsa.dev"
+           symbolicator:
+             enabled: true
+           images:
+             snuba:
+               repository: {{ .Values.spec.registry }}/getsentry/snuba
+             sentry:
+               repository: {{ .Values.spec.registry }}/getsentry/sentry
+             relay:
+               repository: {{ .Values.spec.registry }}/getsentry/relay
+             symbolicator:
+               repository: {{ .Values.spec.registry }}/getsentry/symbolicator
+           ingress:
+             enabled: true
+             regexPathStyle: nginx
+             hostname: sentry.tools.dorsa.dev
+             ingressClassName: nginx
+             tls:
+              - secretName: sentry-acme-issuer
+                hosts: 
+                 - sentry.tools.dorsa.dev
+             annotations:
+                 acme.cert-manager.io/http01-edit-in-place: 'true'
+                 cert-manager.io/cluster-issuer: letsencrypt-cloudns
+           sentry:
+             cleanup:
+               activeDeadlineSeconds: 5000
+               days: 15
+             ingestConsumerEvents:
+               noStrictOffsetReset: true
+             singleOrganization: false
+             cron:
+               logLevel: WARNING
+             worker:
+               replicas: 3
+             # web:
+             #   replicas: 2
+           service:
+             name: sentry
+             type: ClusterIP
+             annotations: {}
+           postgresql:
+             enabled: false
+           externalPostgresql:
+             database: sentry
+             existingSecret: sentry-cluster-superuser
+             existingSecretKeys:
+               password: password
+               username: username
+               port: port
+               host: host
+           nginx:
+           #   enabled: false
+             image:
+               registry: {{ .Values.spec.registry }}
+               repository: bitnami/nginx
+           snuba:
+             metricsConsumer:
+               replicas: 1
+               autoOffsetReset: "latest"
+             consumer:
+               autoOffsetReset: "latest"
+             outcomesConsumer:
+               autoOffsetReset: "latest"
+             outcomesBillingConsumer:
+               autoOffsetReset: "latest"
+             replacer:
+               autoOffsetReset: "latest"
+             subscriptionConsumerEvents:
+               autoOffsetReset: "latest"
+             genericMetricsCountersConsumer:
+               autoOffsetReset: "latest"
+             genericMetricsDistributionConsumer:
+               autoOffsetReset: "latest"
+             genericMetricsSetsConsumer:
+               autoOffsetReset: "latest"
+             subscriptionConsumerMetrics:
+               autoOffsetReset: "latest"
+             subscriptionConsumerTransactions:
+               autoOffsetReset: "latest"
+             subscriptionConsumerSessions:
+               autoOffsetReset: "latest"
+             replaysConsumer:
+               autoOffsetReset: "latest"
+             sessionsConsumer:
+               autoOffsetReset: "latest"
+             transactionsConsumer:
+               autoOffsetReset: "latest"
+             profilingProfilesConsumer:
+               autoOffsetReset: "latest"
+             profilingFunctionsConsumer:
+               autoOffsetReset: "latest"
+             issueOccurrenceConsumer:
+               autoOffsetReset: "latest"
+             spansConsumer:
+               autoOffsetReset: "latest"
+             groupAttributesConsumer:
+               autoOffsetReset: "latest"
+           system:
+             url: "https://sentry.tools.dorsa.dev"
+             public: false
+           hooks:
+             enabled: true
+             removeOnSuccess: true
+             activeDeadlineSeconds: 3000
+             preUpgrade: false
+             dbCheck:
+               image:
+                 repository: {{ .Values.spec.registry }}/subfuzion/netcat
+           filestore:
+             backend: s3
+             options:
+               access_key: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+               secret_key: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               bucket_name: sentry
+               endpoint_url: http://192.168.200.100:6001
+             s3:
+               access_key: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+               secret_key: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               bucketName: sentry
+               endpointUrl: http://192.168.200.100:6001
+           config:
+             configYml:
+               filestore.options:
+                 endpoint_url: http://192.168.200.100:6001
+                 access_key: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+                 secret_key: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+                 bucket_name: sentry
+             relay: |
+               limits:
+                 max_api_file_upload_size: 200MiB
+           sourcemaps:
+             enabled: true
+                

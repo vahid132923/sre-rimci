@@ -1,0 +1,645 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-140"
+  name: gitlab
+  namespace: argocd
+
+spec:
+  destination:
+    namespace: gitlab
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        private-gateway-access: 'true'
+        logging: 'true'
+    automated: {}
+    syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+
+  sources:
+    - repoURL: https://stakater.github.io/stakater-charts
+      chart: secrets
+      targetRevision: 1.0.5 
+      helm: 
+        values: |-
+          Secrets:
+          - name: gitlab-license
+            data: 
+               license: |
+                   eyJkYXRhIjoiQ3owSisyM2ZvNzZ4SjIybGVEYVJOK2tlRldNMkRZN0pLZXFU
+                   RytkdnQwWU9FaUVmSXVpbnR6VWlzUVNXXG56bWdqNklqSWFxRHQ3dUl4MVlm
+                   VHNlNEh3SkFleEVPemxob3Zva1lvV1VpUURnMmJubzQ4VS83Z0RwN1Fcbmwv
+                   cFFOM0JQOUhSK1Jnb1FvVm5jUXo1WG1tNkJQYXhBenNkNDlaVWlhbTREbFFn
+                   bVAvOEY1Uzh5VmMrMFxuaUlUVHpCcGpFVXFkUGhWRUtINHk5TXpUNGRtT3R6
+                   NCtiV0k1aHdWS1JTcG9yRENCY1ZtOGtROGZ4d215XG5MT2cwOWRwdHp5bGJ3
+                   NnQ2V2lvMmkyYjVGUXg5aU5qMmxIRGc4TGpsaHhhdE1IYjMrUkdWS2U3Ykk2
+                   ZE9cblB1N2hzWUlGNXdHNTYzaDBrYzlwdjlMZlpXTEtTOWlsU1N3cXhmRXZE
+                   a3JlUlR6RG5BcnFLUk0rbUY0OVxuWUxxQ1pnSHNoLzJwYVBGUlBwZnBxS3Z3
+                   TlMxREZGWnBPVmtsL21rYzZyLzF1OU1xTHl0TlVLRDJvVFFvXG5BOHRQeDFY
+                   ZVprWlFRelVCSnArS0Z5aGhkOXhLb3VnQ25IQ0htMW0wbzh1VFNLcHg0Ujhv
+                   a2tKN2lzWkZcblJlOFU4TmRTazI2cDRFbG8xV0JGWDc5eTRWN29RaWg3Qnhn
+                   dWRmZm1lZmdVSndaY0pjaWhiUUU5QXJadVxud1lRYWJhbWN1R0E2ckVWcHNT
+                   cGhoSFVvdDUyWEcrdGppcWJaeE8zMzVoRWhGV3lUYUNGVEN3djhJb3ltXG5v
+                   am5uOGNOUm9taEo4ak43ZDJYTTNoT2k2dCthdXczS0NoTnFLWThPUDhTaVk0
+                   L012aG9oT2gxL1phb2pcbjBrc0FHVzg4U3pLN1ZYQUtjVDhlWHozRkpUZ24r
+                   VEN3enhrWVAzcWRPT20zY1gvUGwvN0xEd0k4RjRLeVxuVy9lM1lmYmk3NEJQ
+                   SGhTejFpcks2cDNZV3BvTzZYVXNoa08xQjVDTDVlSVBVNnBXSGxxQUE4bmMz
+                   MUxyXG5uVzR3VmZzK3BJcmpJR3FPR0Q4Qi9FNXhFMHpQbHBzNzhldlNjbnBq
+                   NmowbEJrYVQ1SE8wN2d3VlIrQzRcbmJPVmVLSGowRXBQUUsxM3dnWGIxNzIy
+                   VUNiaW1hL1o3bUM1bm1mMFNqN0dSTDY1N21TUmdwWDVzeWJxa1xuSjluRDFq
+                   NldTZmh2MmVXa1NvTC93RUZQeFlhb0tPWStRVWxlK2h0STdyVG5DTkNFTkZO
+                   Mjc5cTVPek5HXG5GLytZVjFsSHlnamdrVDkrMjRPK1U0bG9FWE5vK3gvQnpt
+                   b2lDMXpyUG55WFhnNDFvdjM1ckxzQjhDR0pcbkdkNi9NWGUzVFB6WUEvZFVE
+                   ZnVRZ2QxWHV3eHJ4ODhLdGdkU1dQUXBaeFNCQ1podVdscnhJZEJxVTFrZVxu
+                   YWV6S2hDK2MyOGRkWmcvRDlBQm43WmRDeGwvVDkrMUlycTF4OHRuN2U3WFJa
+                   c28zY3VDRE1PbytmLzFmXG5IYzR5eGFlOW5QNzJyM3Mxd0RjYWFxUDNXSE4r
+                   SGo2UGZLb1hlRm5zNDJzd2k5d3Vta01EWFA4UmFjejhcbjBwc0FaVkd4NjZn
+                   VjFydTM4VjJWbzFLWXJZNHhQSlgyRkR2OThMV3JxQjU3K3VNaXdDbHVPR1pK
+                   OWFBRFxuNkxFaC9SSGV1c1FOSnJENlNYS0VzMTA5QWk1Y3poVTNlWUdtcUNw
+                   anBYL1ZTcUg0UHpmT1pBTk5wSHpYXG5TelhqNjBLdHo5ZzBDaTN6RmVuK0lB
+                   a1BHTk80Z2UvUU9IRGlENmlVOUJZU04rMVhPRnRzdHEzeXFLNnBcbjFUT3JZ
+                   bUlHR2I3aGtJdi9tQnBKTGVDV1JFeGh2a09NR1pSbjR1WmUwWHNBcFVYbFgw
+                   WlY4RkRGdkxHOFxuS1ZpTCtHYzRyaDAyWHl1V09JUW1KVUs1TXJvWDdFOGtJ
+                   MXFITVAzYzY4QVNOdjVqSktiWFIwZXoxWXFmXG5XTUN4d0lhMDNBTWxvUjFR
+                   aG9hV2NPVEthNlkwN2FDb0Q5bFZDWldFZTBIM3VQSHFOaTRWWENKT3B5NTlc
+                   bmt6VUhuSmFCVDhLZ2VUOXU0dTVranZqdmhDZmpZMnVTWVZuRENMTFJLV3Y4
+                   bkRKc2p5dnJqdVVRVjM3TVxuZWdacFd4Q3hlNEY0V3BuU3h4ZzdWSjlVQXpJ
+                   TnFZa01vUGNPS0RQak1xTXpVOGNGUDYzMFp3SzZzQnZ1XG5tcTg5UThxTXE4
+                   L1BEQWgvOU1uZk1mTkJCTHB4N2ZVVVBsVU5TOUJhUHZwdDYvWEJVbkFDcDh6
+                   QzRmKzBcbjNyRENoRSsrSk1UV3V2N3p6a0ZiNDZvRWFQaWZMVnptZlFVM0xX
+                   UnJwcEtBZVhadUQvdnF5ZnduSTRTaFxuUUZjM05jQlRjLzRaUXkybmNVa1E3
+                   RFRIcG1uWU5hTC9xREZOQ05UMk1Yc3VDUHJ0eCt2akFjOXF1T3pXXG5mVkFB
+                   R3J4WDlTNVdONTA4VXVIRUFGTis5b2pGN1hsTHBBVzlZZkU4M0w5MDhwamlK
+                   TWx4Q2Q5TzdXV3RcblNqa1BNb2FXdXVtNXFYeDQzdi9ia3lNczN0bVl6dWZO
+                   bmovNitJcDdKcHVEQ0lKV2cxb0g2VlNueENkdVxuN1VpMVZ1UWJzYkhVbkp2
+                   Skpwc2xuUEZxMWJ5ZTRUTnpKYkpmWk9mdkxXdEI4ZnZSa2pzWENSUUpwNUZu
+                   XG5nTDFLMUd4NkhrcXI1V3JDejJBaGcxUFV6WHE3TCtjLzZuR2Nrejd5UWt2
+                   R1dmY252b0IyenY5Q2tYdTdcbnNVVGdNU1ErcEt0clEzYkVxMlk5Nm5CUjJu
+                   R29rR3hDRm84N1hJeWJ1VGt1Qy9DTSt1YlhldmI2YmdUK1xuY2Z2eFdkZjJ5
+                   V1RvYlVvRmRaZlVIeGlKdS9sVWtZTExhUktDWERHTUQrdVpHWk1KTXhCMnVy
+                   ZHREM2szXG52NURPZis1cStvQS9DOW5pQS9sV1VqV1lFeVNZLzJEc0VWamV1
+                   UnIxU2IvYURqcW5Dc3VPSHBmay9OYnNcbktEWjgvMnh1TmdvZ3ZXMUhqTWdY
+                   TVRobGJSZFB6UDVmRFZvajRQL1NiUjBxSm9uczJ2VG4xeVF2VVl0MVxuKzA3
+                   Zk1weC9ib1BUNVdCNXJrekNHWUVENC9GdG8vb0RUVVZRKzRGOFI0Sk1OT1Nl
+                   c0Y1MW53cFBMcEZsXG41MGdDNlFUMk1xTE40Zk8rdkt1NnZpSStCdEFIM1N6
+                   clJaaUNHak9hc3BVNmdJR3djL0VRZXMzRW00ZnFcbmhMY1lmSXZaaDM2bHhs
+                   OFBPMGpZc0JYNXpNay9icWlqU3A5dEFuL3lnTEFrSUF1Tk00WFRQcnBHYTh4
+                   eFxuY0EvQlZ2ZWMvU3FqTm9IZEJxVFUzY0ZCR1FvT0VTL294MVYwZUtYdG1u
+                   bHd5UEhvU2NJZDI3S1NvNFgvXG5qZHdqY28zY0JxVFNpb241TlA2VzRjOE56
+                   eXg4QUNhU2g2TzFtN2YzSnRXWUtjUC83ZEJpbXRFRFc3bXZcbnErTHVSN1pR
+                   YVMvYVBLMnFqL1QvczFzTnQ4bFd3czRld3lCTmJ3Z0xTVkZLNmx1eUM3ZGNT
+                   ZzEzMjhOK1xuQVI0SzFLLytBTzRMWG52WUs5WjdZZE9LVEVFY0c1aGJjbjZJ
+                   WlR5cktaOHN2bTY1MkpybkJCSmNCRUZlXG5GcHlJcGJBWWx2RDB5bTBqbENm
+                   c3YxY2F2RmxvUElVeGlQc2NvMm5FSzEyYnYvVTZON0JUZmdNSmJEeDlcbmhN
+                   S21EcXVzR2hyS1BqTWxqSkw3eVpjM0tlSWUyTW1MWW9sMmxmOURudjFDaG9q
+                   eUNoTkFXY3lRRkpNSlxuM0VPdEZ0dkNRQzVoTGN4a2ZPRGo1YUxkS1IrcWVy
+                   Zjl2UWhVM2xTUEhRVUlpeEYwU09wMlZRdXhvYUtNXG5pbmNsQ0FNT0lNMjVs
+                   aXdpU3JwSEZkTEd1R2xCSmdRUmM4UG53Ujl0YWlIMFlnN1FuMHl1eDU3Vi81
+                   d09cbmxCYXlyRmRzb1p6Sm43SndSSlczdE1OQkRod0FHNUVvR0FFT2QrclV1
+                   cFR4VVUrUVI3VlpQZU05RTVDeFxuU1ZkSTNBcWlFNS9GdFVibzNZRVFhbTJK
+                   UlNjeE43R0tDQ1BrRnFFdnJ0cTRpUjVha2poRGJaSW9RMGpDXG5RRXhRcWg1
+                   eHg1M2F1ZC9HY21FUGRPYkt3UXpENHJXRkFLeitDNzgvRFh0YXJwZU5aTW9q
+                   ck9qSUMzYXNcbmgyc2NjdUJ1YVcwa3ZCU284dFVMMTJ1VytYTHZReG45VWhq
+                   KzA1dnNoV281WG5LcXY0M0xZcmNmNFppaFxuTWdTTE5WOU44U0ZmT2hBMmQw
+                   VjJqcFhVQy9TOXNSV09FZzQ3NUNQQXhMNkZ2M0JUYjA4Qkptb3JjeHpDXG5y
+                   RXpWNnJHTFoza0E2QkwxUzYwKzNwZ29jWEJhZmh0NnlpRHNpTE9RekdWaENP
+                   R0hibUNJUldnSlAxSTVcblNQNWR6dk5oeXBVYmZNMzE3Y0tnamhQMzMyVUhX
+                   SWN6cE9oQUhrVVNReUg5VU1ZYU1QNzRIN2piMDY5QlxuU2c5SVVDQjJ1UFBh
+                   WlB6ZlZnRUl5Q3QxSitHNFF2VWN2MmZobUd5dnNCc3RXU05rell4dVBHSEgv
+                   UVZnXG5VZHZETFF0ZUlrZk0zWkZralpMOEs0ajRxRG92NHc1NVRFSXVsSFlG
+                   ZjUyVDlkZEhsaE9QTlB2TkRBN3hcbkRYeEpodkJvcjc3cnpheTdQWFF6cTRv
+                   UXYwYS9LMCtFS0xNL2hTT1RXVHZDSGxZSWhBK0ExaW9iZlJMQ1xueTl5em9m
+                   ZjhTNFQvcDNsYkthMlcyUmZrck51VDJrNmRWUlRlQ0VOenczcDI1cGhnRytt
+                   V1lDMVdUbHFLXG5scUpKTEhKWnlZRDBVQWJNclc1YlhaalB3eVlaTTkzZnJH
+                   ZDFLeHhmTDFEOS9HQUhqb3o0VUtMN25yL2dcblZGYjJNRDh6c2N4Wk1hZHBD
+                   NmlqZWFwSFpQaDdKMzFrNHlCSHJ0QzFiemFhTCtYVUtPaEc0aXN4aThpRVxu
+                   UVlmOU9JTGNoSlROR2pPa3VKVlhwSUg5eGUzL1RpZG95S3M0YmJKbStZVmhy
+                   KzdFM3ljMWR1T0MvSGdhXG55UTlwMUNVemNreEJnTVMvNFRKMW9zL1NsN3Bl
+                   SjFJbTNKZmhvd3BXVGtRdGx5RDhCZnhHZENReUJFcUFcbkU1TlZ6dmNnZUJN
+                   c0VBR29takhkUkNIdHNVdUdZNjVaZXVaQ2dna0VUQ3BWbDA1akhUTTZtcG5G
+                   WDIycFxuT3ZKSllOZlV2MGU3OEp2K2NiZHovODhMVDlkeEdCL0tQcjhlbytu
+                   dWJDdWNIcG9KMENiN1ZCczdBT0hQXG4wbitxNFFrSnhxUGJYOXNlVmpXYmlm
+                   dStpaWZTRk1kWnFHOHh0VFdOWTZkSGhIb0dFNVFUV3l3Y3pIeDJcbjAyd0wy
+                   bmJXU3VzNlJzV1pvYWJpbzV2USt6Y0J0MnBtblAwdkV3RTI0S3FTazFsaExy
+                   VGFvZDJVank3eFxuME5QOGhLdjlqMkF3ZlpzU3JHZVRoTndtZTZNaUd0MHMv
+                   UHdmVklncDJ0cHFzMXJnRWtHc2FFOUpKL0xMXG54Q2k3OW9wVUJ2bE96MlRW
+                   Um8xWUxkSCs5NVlSQXFNRkp0L2R0cEFjczdwRDdKbFdXVE5xM3BzcElWckNc
+                   blVLdFYrWUlMdVFCMVFuMHdoS2wvV2QvcFVZQ1VFaXE0Y1UrdHZwWldzR0Zt
+                   ckRaNTZWM0p4Sks1cHo3V1xud3BMcGlSWE5NZzZGOElqWVJjcG0vSGNKeThk
+                   QjdxeG5GbEtPcjVEMTNockdVcXZkMmtLRnlnNXpzM0d4XG4yajRUeC9MSUEy
+                   Uno1SzB1RldVUk52VVpTWXNiSjl5S0xVODJDTldBcFRwbkJvd0Uza3dUVCtL
+                   VVYrZ05cbk85ZmRzOFlzWUNVYStzaC8wVDkwWmhWdDB1UDVuNlZJNDFHSmgy
+                   MktJRnEvTnRSWkxSbmlKTGhaZkFHb1xuUUxHWkd1YWpNd0EwcjJBeFpvZmQy
+                   ZG02TFBlRGUzekkvVWdqREFidXJIaWw5MnpVWGlJMGZCWHNzZGpQXG5ya3RO
+                   dEhUYXI2N3FucXFNWFhCakpubmRXYlVlZWVxTXBvd000Z1NEc3RVRXVESlhQ
+                   NThZWlk1empjcDdcbi9oRmNKNXpxV0lJd29FS2JNK2hic2UwaHBseG93M01N
+                   dExBSWw1alJRTTZOTHJGajdvWm43Tjlsd01JK1xudEt2NlEveTRvano4WVl4
+                   NVVKd0JjM0FKQjhMQVFsaC9URFM4OWhXZW5EQTBreXRnVlIvWDJJWVZGNys4
+                   XG5Fc0dDV1hjM0hBNnl1ejRnemZZc0NtTlFieHlGUXdIeHFlaWJ1d1JZbkJU
+                   S2xUOFRrdDVRcmh4M1FJOEZcbkRUdERCWmc2djBJZzA4ZDVDSjFpK210Zmp6
+                   dk5LUzNuclc4a3ZuazcwUjhkMitVWUNEOTBSbkRHbnJIWFxuWkRiVEt4ejZp
+                   QmtFcitWTUF1V3NYaEZwdGRJUjVCZUNhTnJ4Y1BFN2tEeGE5OFI4cTg3NjBL
+                   cHJBRDRJXG5kUzNrMUMzU1BncGptVXoyc1NjbXI0Qzd6dG9RUDcwNHFVc0NM
+                   YWh1OWIwUStGNUJISmczWlVhWGtvUGlcbklNYjFJYnIwWEg3NUp0bFNYVFZy
+                   K2U4b1ZJZ3ZRbE9SeWp5NWpYcHlSTzNRY3NPT2FENHhhY2p6WFhUSlxuMmlR
+                   dHdvczhkbmtpYlBzYUhzaGZHa1FqYWVpVkdRWER3bWtkUFh3VGJ3MkYvQ3lo
+                   N1dXQkszOWZpWFBvXG5rbUdMYjU1MlZQb0hOZDhkQksrSGlFdlJTV0Z5VWNQ
+                   VndoU0dEU25TZ0loS2FMbmo3blNPV1p1aDVLNnRcbklaMDJzeW12VllaU0Vt
+                   Z1dRU1hpeStXa2k3eHFLaEdzQ01tTVlnUnB6YThibElBSEpqdWRvYUJmc1h4
+                   V1xucGMwa3lETE9GenVqajJqYlRBU20xR0VidzFJK1ZvUHptQXJQV2VnNTF3
+                   SlJCREF6Y2V3eWFRdkdZcEVmXG5ranZqbmtGNWplYmIzcjVucWk2SVFKNzlS
+                   U2M3djVVL0xiSlZhc1IwS3FYUXJDT29nMEtLWTRycm1vcm5cbm1aNFlpM3FO
+                   RGEwalJ3elk5YWZJZHJUWnI1Tzh0dW5KVUdBWU1sTDVuYVZGRVNkUFh3M0t4
+                   bTRiTWo5Q1xuZkxlRGVrVXl0dDJ6eFZXM3pzeFo1bEZOZmhRd2dOYjZzSXly
+                   L2VvbHY5aXQvZUVhaTdOQlZNYVFKeWhrXG4wVGJxYno2VlhpZE4vODBrZUZ6
+                   UFNZSUNVaTFQNHA2V3plaVRTQWd3bHdkV2d2SFhuaTZ5aFJTdUNLY0xcblRB
+                   SmhxMkI2eWZrWm44STE1bko2OWdscTBxRThnVVF5dUJITTFPM29BVnowQmZH
+                   SkNYakRlTUlTNktnK1xuWjBUZnlZNXZ4WGRHY0ZFM0gvcjlHWWNWTTVtTm1Z
+                   cGZKcDlkeHphL1dZbUIxUVE1Y3hXRk9uMzFVdkl5XG42d0czSzNGQ0xKTjVC
+                   RUxDSURBWnlxaGFYYVNGM29aZ2d4K291aGdGY1hRSlpRVmx4SkdZWVJPWktk
+                   VFZcbnRYRlhaMVhYM1dQTUxZZk5nTXB5b1Z4akt5TVRzSHBTTlBkYkhzY21G
+                   dG5lODJLN3c4VVA5MlNkVmdWWFxud09lLzJRS1J2a0dJVUw5MFFIYUc2aEdD
+                   MW9XK2F0Y25STWxoVktHUVpRbXVmZ0ZKbHBPTkZlYnRabGV0XG5DR0Z5RGs4
+                   UStOYWZOMlZLelVsZGxYUlFrSGd6QnQrU0NuU3Jzak5LYmRTbVdKWkxkWEFM
+                   d3lsZHpFdFFcbmllNXZzN0RrRGJ3UE9YWG5CTFphOFVJLzduQys0Ym1RcDNp
+                   R2c3V1Iwb1FCRnhFNzFtdG0rWUNKUHNwRFxuK2xuOW5SblN0elRGb251UFhp
+                   QndBUFcyb28vTlRkTG9zSXYxOGp4WHo3azZzdFdxZEhnazM1bkxoN2dCXG5N
+                   bDdPSHZ0Y3U5MXBQN2x0NEFiZW1LZFY4L1Z6Ujh2ckZZZUY4L0kxTkw4RGpt
+                   ekZLUTQ3VkdLOStzVjJcbngwRms1MnBaNGRpSlJJb1lkY2psOFFCMFZFS24z
+                   VlZvMkFXQzBGQ2pxbDVFYytROURLL1JibVNTanF3c1xuc3ZKdk9qUTRYN0FU
+                   SHZjaVF0YjA2ZDhYVzlEQjNqNEM4U3JwM3VQV0h3RE5xRGM0d2ZJRjZkN0p4
+                   SmJKXG5XL0RvalVacktJWDZzcWpwZytJaEhNZkRyczRPLzg0QW5oeDdXMGpi
+                   b1c2QU4xVmlrUjN5Z0pjWHVrN0NcbkUwNUppaFpvUXdaTTc1dngwSVM4czdo
+                   b1prcmVXenNQWGhuNXpGUU01WWZSN044Vm1KbVJwYTVhVm5rWlxucDRDYldq
+                   UkNzTlVDR1ZzU0FVOWNTN2pGZGNPMTMxSXp4RWhwSzE0emNxVXpYcEZGU2kz
+                   MTZIOWVhd3VqXG54SDFldE8xY2dNUFQ1SkpPOGVPSUhPN1NnRVNiSVgvbnI4
+                   L244TUpaT1djdzhmTmFscTB5UVFIeUtXNGFcbnlxMmx3dUVGaGpHL1llcDlF
+                   YXJNVjdJWnBFcDZZeFZ0SlN0UnFTcjdORWFndDY2dUVhaU9Pa3NwdDdiTFxu
+                   REVXQTNiajc4RmIyTTZEUitIVVhYdkRrdlM5S29JY3RLVDU0Y0RocGE1VWlM
+                   VXNaSGJYWlFkRlo5bUlUXG5rR0pJZGswWnZxcW4vaXZOVWN2YWZPWDZhdnNr
+                   VzJJcUhJcm5RQ1VxakZqbDRtZ0RiWFp6NVhJakFuWDlcbkZ2SUVKNFpLNXQr
+                   YlJaRUtUV0tFOVprNVp6Y0pSZDNHR3RQc3FuZGp4ZVM2cHdiektuWjNxajZn
+                   WkpYcFxubC9hZjVhUHQ3UjMwdG13SHFERk1PemhqSzVVMDdyYURhclpzVjBL
+                   Y01jZkJ1amdKbnVCdDNXaU9UZkxFXG44R3dyR01ROHIycmJVam9qRGRCaUZj
+                   VW5TMmtuc1ZKNDNDc2phRzA0ZHk5UEFack9KUjVzYjE1Qnc0VnFcbkg3SG9M
+                   NGxWNXNsYUVzbkR1bzdpb2JQSHRmbkUyK2Z4SXFuRVB6V1pJcUlYOFNJYzdS
+                   cEJ6d1RxdkZhNlxud2FCc2pwNncrQjdHSysrR0xtUXdFTnBJZWdZZ3lCd0pG
+                   dmtOamZvNnlBbkFHRUUzakdobDRtWk40QVV2XG5raEZWYmFIRElpK0VRdXhQ
+                   ZHhnNUp5SE1zdFhjYUZMSFQ2Y2VFRFR3cnMyNEJUMUZTNlVRMzdGTlR4bVZc
+                   bitLV0p0SWNya0FwbnJ5SmVsZG5DTXRaWHJjb3Q2cTVuV0ZMdm5kc2xsWlNm
+                   NHZuTHhOMThrMk9qeGdJVlxubGZJKzhpMWVOdUU0Rzdid3FVRFdsb0NuMXZa
+                   ZWlBUExsVnhvRVFUTWUrTGJXOFJURi9sK2ZvQmVCRzZ0XG5pcDVRMDlFcXRF
+                   VzZ2YVg2eEV5Z1dSMFZZQVY3elFJcDVSaGs1R053NkNhWm5DTmZDcXJvODVi
+                   OTlyK2JcbnpWcjFJSnJHdnlQUmI0Sy9kajJ2RElkbVk3NzhGeHpDMGlaV3JO
+                   UWQ0VEVLN1Z0eVNVSjkrRXFVQ0pwYlxuVDQvL3hSc1BlMFZ3UmtWbjRhQU1t
+                   NTE2SUFEdnFnV0RDN084ZTNvYlIvOVZNUmVqT0RsTlFEVzhUekFyXG5Hc3Vv
+                   eGJUS1pBZ28xbUlocTdhNGIrWVVvRnFtWkV2VGUvQnBGME1yTkV1aFBab09y
+                   bXhSeVBCYkpUVllcbklqc1hYOVVyek0vZ28rSS9Oek0wRVI5c1FjamsyOVN1
+                   aGllaGN3cmdJNjdVVjRKYlFWc0tVNlZzc0NJWFxuenVZczVWRXFWOHJSNU5j
+                   cUVTcHJEM0xBTmZIdlVvMnFhZG0xRTl0OW5qeW5SMjlBM1BKYTdZSjRvWEFL
+                   XG42WkdjbUoyU1ZrUUNYUFpmeUZ2ZXdtTm1qaEhWdS9SaStWZ1N3RWs1SlQv
+                   NHBodEk2M0NlT3VJNGZwS1VcbkttTGhSeFVYQVhtTXhDcXp4YTRYRWUwWm1y
+                   V3ZsKzlveThxdXVzbURrWm1PYVFzSUxwbGQvMTVGZHYyNVxuVkJOK0doN3dQ
+                   bzZQSkNIVDFTbmdWN25qRXYxa0JYbUdoRUc3ZXFoRVFaZWtZcVBoa3JkYm1w
+                   OENsUGtIXG5Tb0hKZEtkYzVub09vakxtMHNJUG9vRGVNQVg0VWdrczlaMlU2
+                   Y1I4WU5ac3dOeFpvenJRTVBPWjYzNllcblBNRE5HVEljblhkVXcvRGlTc0wz
+                   R21vOHFTRkYzSXdFWjR5c1FhY01GVG12d2JPN1FyMS9EcDkzUjJ4VlxuR3Ey
+                   cWFiWEppaFBpQmdHWFErR1dkZTZhSHRiYUhHZnM1aUowd2lNdDhSOFVWWFln
+                   M1pnc1Rhb1FMWjUrXG5NV2tIYjFsNVNTUjN2SnlJdlp1Q3llRVBVMi9jYjAz
+                   MENBdTZXckVsbDlTYXlIUm5ncTI1ajR1MmkxUHJcbjB5UHFLNWJPSmRMbXU3
+                   SnIrTkEyM0RiUjFnMU5seEp1ZC92bnpRK0M2ZndzNG8yWUI3NkxTbDgrNnJI
+                   ZlxudTcyK0hldlhFU2FmYWFEcFF5T1RSOGtQOHg1MXB0QWxTTDU2OURrOUwy
+                   TW1DWWhJK3FyYTM0UFNDMFVLXG55N3JYMlEvV01tWnF4L1I2N2FpZFFxUkFj
+                   VTNGY2g1Q2JKemV4ZHNPVVVjSDd1bzlad3BtdGVtYks0dTRcbk5Fc2Fuc1NM
+                   UENXVlIrV1dWMEdDR0Y3bmpxS2o1ZFdGNC9ld0t3WllaUzlCMWovZmZDK3p5
+                   aUFuNGUrS1xuYUoxMzhLcDhSTWR4Y3hFekFabFd3SGpYZE9ESTZQNGI2aDBE
+                   ZTJDd2o5d2xLR0Zic1VXS1hJVDRnekIyXG52VVhSd2RWMmZZTlVJVXlmbXlx
+                   TVZGSFRNci9jcDJVME43VUdXakJNVml4WGFORGFmQVVPdExWUmFMMDhcbkpU
+                   OXVDdjZrSFVWR0tMRmRYeDIvaVpBOVE1aGFkQ0pWTEhIb1RjT1lPeUhRVWl1
+                   MHpWSzBOVStUZ2ZXYlxud3NEdkRQdWY3bWZMTldSSGVHdFdlcGFVUmhCZnBY
+                   NWZrVjhEb2tieEdKZFpmcEZ0SlJkNXRaMWJHbDc2XG4vQmhNR3NLMTBaS0dZ
+                   b3Y4R21tYXJWVWd6RE9vMTlab0pKeC9JSng3RmVwaFhISnpUdloyK0xrdHQ5
+                   a3pcbm5TRHJTdlB1d2tVejl1ZkxieE5QWFJraWJyYlBlN2NSN09iQ1hyMGF6
+                   TmtqSW1EK1JEdGlBTVZhd2IrWlxuMzFkWnFnbXREZEtWYXZXT3RPZ2VsUFZJ
+                   em9PQ2Y5cVEwaEZ6M0RGaWYrOW92OEdvYjR4Mk9CRmVGY1FvXG42ZXVQK1Zp
+                   MmNxeFdtMzB0a1ZjcHlDa1VzZFVZY2I5eU9mYkpRcWtpWmw0UHhkQ1luLzlh
+                   ZFFvMjhJVU9cbjBXUk43dFdPcTdYV3ZjWlI5Y05Qa0NyNWYyRmE0aStKT3hi
+                   T1RBTU1JNGhDcmVhUHNYaVhXMXNDWk9vYVxuTTBoZkNYbzBheitpZjJxZE1I
+                   MmxvL0F4Z2FhMW5JOEZqdGhXa2lTN1g4OGZsWTlCaEpKdGVnUXhYcjN3XG4w
+                   akRrcUdCeXdwcmJsZHhHcFd2ZCtLNWZMUklLcndzS25RL2hxeCtybkZYWk5P
+                   NXloRUlrNllDRThoUnpcbkJlakthK2ZubzUwT2ZqZU55QmN2RHl1eHVVbGw2
+                   ZzFZSGprdGc2WmlaOXNpMHJETFMzNUNnSmZXTm5rL1xuK1NMeTJwQ1Nwb0N1
+                   c09uNzd4Y1BBbnVDV0pSK20yQjdiczJ0OWFnWmRnMXpPaTV3ZG9BOFlmZWtF
+                   ZXZFXG54T0VYN1hWR2pYUHFmRjd4Vko5Uk1mcVd1RDhPSWJsQlJSOGVXNG9H
+                   L1F2TTd4RDFLbEFkU3lObVhMekVcbitBc0tIQ01UNk5jQTYzekE4eUZ4TTB3
+                   dGpCZXFvU2NoOWZJbEpvS2l4eEdRb1MzbzRCQks2YVdTMWxLOVxuSDNxdTJD
+                   ZGxtTkVPODdSVkR6dHRaTVFzOVIzNytQQTZ4MExERWw5WlNKWElWV1VnaFB6
+                   TUFybnFFSDdvXG5zMkNtWUEyU2dlK3hJU05Za3lWOEFreEovREp0OFZlekpp
+                   M2ZjUVU5SVNUZllvUnh2dXJmdWZYcW9LVmtcbjl2RWo5VDB4elVKc29mako0
+                   Y3JvRC9wVHFwZFdudnFLenBxU3llMHVZVFJ1SStMNXNkRHQ1RmhjZGxXVlxu
+                   MnRBTHJSSGpaNjQvdUtwaFQ1djgvMVdNNFZFV2tRNnFQa05SU1NDT2ZzS3pQ
+                   bzlMZG9rYm1JdGVUYWpOXG5TdmVzbTd3bENXazVCQWlyK24yNlliRUIvWENt
+                   M2VXTEZPdXZMNWROaGY4YStxWHJyZllHUElOaEl2VFRcbitsd1R1SlVZNEtP
+                   enFqaWRkandaYnJWSlZYZFRvbjlqaEVkUE9ZaDcvNjRhVE5YTFVjSmJCWmgz
+                   RzB0eFxuaTc1bW1xN1BzdXhOdFM5TUJRUXI1NnZVL1Q1SWRFVFZDQ0Y2Q1pU
+                   UExUY1pvZEJ3ZXlYa3AxWXhqQ0JtXG5iLzhQdVVHZHVTRGxZVmMvOW1Sczkx
+                   SGtDb0Z6aVhqSDNQdWMxK0lETGxONGM2N0RlKzdXVjZEWnp4ZHVcbi9TUlNE
+                   N3BHcGFHNkhEZlNDd0hNTFFuWmhxNUpmQnBCTi9SNUlobEx6TndPSnVpVm0y
+                   T3F2QUo2VEg3UlxucnNzV1dYbFIwcWo3VDQ3RUdQVnpqejZ3ZTdmQmtJZ1po
+                   d0Jzd2RJWWJ6WE5mOTMrNXNpbEVldnlFeVMzXG5pNXhpSENpeW0xa3p1ZDlZ
+                   ZDFqWGpoZFdRMytueURYZmNsNjVCZ0x5OGxmMEEvaHVTQ3V6cUttUnY1UUpc
+                   blMxc3BIK3hWaHdpRytOZWV5MGpNNEJuTUkrdlJOWEFQcEVzZDJVNUJrWDFx
+                   VW10a1hKN1hhSnNEWkd0YVxuM2ZNRGxKWGQyVVNWdGFpOEFvM0t5N2NOQWlE
+                   U2ZGbzJKZERyNDBPK2dQWXpVUEhjTW1LSm5maGhjeXBsXG5nazExLzF5TXIv
+                   K2p4NGMzNlF0MzBBOGdOeGl2KzZEN1VoUGtkVllseDN2NXRHSGxVYk5hblh0
+                   WmxScE9cbnpOS0VKVkE3b3Z5ZDdpb2duTFpkQzFxREl2WGZia3UzQUpSYTZM
+                   bkRQd3lBeTRGNGRHRUNYdSsrSmhuRlxuL1Yya2FkaUxMdlo3bjRKZzR6dExo
+                   cmNuWkFOdEtlZXVXc3dvR0dtRHJ1d0lwYTZXRDNONUl4ZldwZzZOXG5Pei9D
+                   VjZ1WWdJL2JkYi9UNmpBbHptUk90T0x2RkZWaGlZM3h0UXJFT3hUSFNaVjVy
+                   ekUvSHFhazhnL0hcblhGV1hyeTN4QUt1Y0o2Qzh2N2EwTzlWU25yOUlINmt5
+                   TnRJL0grd1ErVmF6RUVLQjBJZ1plNW1pbFVpUlxua0N6ZnRrcjJkNkpqL05q
+                   cUVhVFlQUWVLZnhjSVJFK2pRcjJoaU9tVXZFRmZZai93VHBEbUN1Q29Md21T
+                   XG5hN2lURzI3USt2bGFSQnNHMU5iRkxiQkpWNG1UTVFxRmtvSmpUS2lFTStk
+                   eTRPMzAzZ053aUdjTkxJbEFcbndRbTRMcDZIRktmWWZkQWl6RWxqYjl3UVlx
+                   b1JUTkppbk5Fa1pPRkplNko1SWRiRC9tK1dFUDZYelE5dFxuTnM4a0hjaWor
+                   enpQeGVmekNaTmtJK0FjbUNqSkU0L2VybHUwcmUwRndwa00zRjNkTk5HTXdP
+                   dG5uc2IwXG5JM3h1b01iQWpEc2lXZWtJSXRWNzM0Y1hLRmZiQ1pSOFI2cEZE
+                   WHk2b1ltMHE3dlBWNjNZd1dYNzFSQnVcbmFiUVZUR1phOFYwdzNldFJaM3dN
+                   a0VKd2JKY25nYjlJNVdvTUt4UjVmTk5XVlgzcUlsRUpwZHlrcHF5RFxubjlh
+                   aEdNQmF1cnhFdG5PdlpTTnpRQ0tQM2dTMzgyQUtEbVVJWGNZTTJrakRBQnp2
+                   QmZIYmx2ei9DRmUrXG55c09pVnowRmtMcEZlWUpESHJLUUJMWnU4Nkw2aUxr
+                   WWVDdnZiN0I4R29TeGxTUkt6cU5tKzRJWEd5MUJcbjVMMHZXR0VDbFk5Kzdj
+                   RHExQnE2ZVFabHM5aWRZSzBHVGJtVXhyWEVsazExdFltYzF5L1Z4cWlHTElL
+                   NVxud05ZMExPblJONlluM0txNjdxa2dpcGYyRHpUZnhSMXNrV0FHNGViSHor
+                   UHJ2TnE1TnorLy9oVnRMU2lXXG4yV2tzNGU1T2QrYzd2SXFqL2VFY1lqWDht
+                   bTN0MlJGTUF0QTM2NnJCcEhIRlZ4NU9wSUxNUGdBT00xQXJcbnYrZmpnRk5V
+                   Mlltc0NMZW1XZUphdjBDcU1wZkYxQkwwaWNXYlNFamsyRXNkTk9LZEZJUFhx
+                   ZWF5SEtnQVxudHBNMGpOU0d0MHlXdGR0N2lGa3p5c3h2d1JlMHlxSFZuMVEz
+                   d1NvUUladEZvU3k1YUsyclFBMUtrajRWXG5HcWxLOWpaM2Y4WncwbkZGb3R4
+                   N2ZTM0h2NVhLVm5vNmp1V2c5Qy9KWElCeEhWa09XcFo2N2NJWFUrSjFcblJ1
+                   SUorRnpqQmkvWnNnM09JbVIxYTUxbEk4bjB3ejdCTGs0QytLMkR4ZXNJN1Iy
+                   elBMMWZsdTltSVVsNlxuWVRKbXl3OWVtc3A0aUw5emdnSFdybWEzY0lkZEox
+                   a2JUUTN3Y3ZLbmkzNVh5enJuMWZRSlV3VFBvaVNQXG5jNFp3TnVYc1p5SUJx
+                   VnpVdkdzNWRndTUrY1kzV3hPZE1rUHYxTmU5VEhLMTMxU2FKZ1FzUFlEN21I
+                   alVcblloa3hWSHZiMlZFQUhhWEJxcWMwL0kwcmYvVGhXc3JPVkpCQVBZY1RS
+                   R3pTNDErUGVIQk9IL09ESDd6cVxuNnhLSzVwOFI3Z2JKb1QyTnlCUnNXVGpM
+                   bzlwNWN1Sm9xMmRLUzVZZ1YwR1JxaThBVnNvSVR3OWdpQ1I2XG5nL2gyaDNU
+                   WVpnUjRrK3NnWGU2MG5hTnJqb21hZUNTTjlGTytiNy92WGEyR0RCR0s3b0F1
+                   TUJFN1MzYW1cbnFIdTc2ZXJIdTNNdm10dHVGVkQ3THhnaFVJRmxyb1hjY0pE
+                   YUFaVFZEWmZ5TGhTVEVTSzBQZU9TY2tpK1xuN1dOMU9Rb2plM1Vna1dJNUY2
+                   dXlOMkhrOC9wdy8zZVJVM0ZJN2tGMFF6RS9aQlBqSVNhQnhVMXEyMXdRXG5B
+                   TXU3RndhSGJSaUtwRjRLZmZGTS96S0JHMW1SRVJiYnRyWkhJNEw5enoyL3Ri
+                   aEpGVnhBYkRhdnNWS2NcbnlNYnZ2WkwrbEw0RDMzNGwyelJaV0lYcTV4cXJ2
+                   NlJPcVJtM2RjZ0xmZytBclJORlFrRi8wRVRGQ2hRNlxuQ0wzVXFxcnhUK0dz
+                   L3NLM2xocFloU0dxTFpGZE9pZGZGUUtVejFCU05IK0Z4Unl5UmhTN1VLSWZ0
+                   UUpxXG4vUjI4ekFnTnE1N1FqeFVqNVpQb0R4SXl2NENjRzVtMWNMVGZqQmJG
+                   RWpWVEJQd0dOWkxqdXRtemFoRXNcbmV4K0RPWVdyNkJWNjRYWGhQQTJIcmJG
+                   RDVmbFJyeFpER1pEM2pjV1FsdlpQRllYQ05VRmo0S2FLcEsvZ1xuSmNsRDVx
+                   TWFYR2NmdkJxVjhkSlRoZzNvcExuS3lyWnBZMVpxYy85L01PZkppbnJaM2ZH
+                   dHprLzhsWWJKXG53OGFuYUxKZEFaY0hrWkFVTVAyUEpmZnM2L1hZNU9MSDBq
+                   NGYvWkgwNHVtT05ZWUc3UVQrMVZpOU5vWnhcbi9DeFRiNVFTc2oyR3BjUTVU
+                   MmpsZkxmM0NJVVVMSWYreGtkRHl4YnNCeDZ1UEVvQ2JJd3RMejlYVkk0bVxu
+                   cjA5SlhsdEdYTzlXNFF6YU55M202RUNxWGNYY3JIMWpNb2dxZVBZWXg3encv
+                   YUZ1ZTZWeHhIS3VHOWo5XG52TUs5QWZHUjNQVGhzajhGaXJreHVhUmY1MXNL
+                   USt4b1RQMTFWQzNmZi9oNHUxY2tnTG94VEZWWld4dXVcblRkalNvc255OUZL
+                   akhlNnplSnh4am1oSlA1djhHZU9zQ0ZMdzllS0FSZTVMaEI2RzUxc1hwejR4
+                   RnJvbFxuOTlJeHZwaWxzOFUvV2ZFQ3BYYWtxVzZOS2RZNXVma1dNbXpOYXR5
+                   Qi9tMGhoME9iV1RjaTZUUXVZUT09XG4iLCJrZXkiOiJsakJEdTVOeWJoWkFE
+                   MkxwM1RLUk5PMXJBcnZqaW5GaTlnaWNTaks3anU5Qm9MeHNKUnBtcU83QzZF
+                   b2ZcblVWSnBaSlFucGxMTFh4bmxUcEZJK21IaUhyWG9nWGdhZG50MlJTb0dF
+                   VllsYS96bm1teTV5azVCV2gxSlxuRzNDUGx5SEdSQVI3OTNaY1UxblZsUjJw
+                   djJpNU91eWpmeTJZQTlZSVFHRllMN1VISzNXcWZRQ0R6RUN6XG56cWwrRFJL
+                   OTRiYVNxeUZOL1RES0Z4a01XWXIyTUd5ZFlDdGNhWHVVOGkwWVpMSkpZUE9N
+                   USt0QW5hT0xcbkMzTWgrVmF4WXRESCtOZkp2S2ZLMGkxK0JJUms4SzhLb0VI
+                   cEJyZmJaMEhhSWliR0R5Y1R5SFp2eS9acFxuRmVoWkN1WWQ3dnlrcWZwQThW
+                   enZDQjVqcWFBZGN5OHhaWXY0dGw3OFJ3PT1cbiIsIml2IjoiTVlIVnZwcE9Y
+                   MEUwRzFSRk00Snc1UT09XG4ifQ==
+          
+          - name: gitlab-backup-s3
+            data:
+             connection: |
+               [default]
+               access_key = 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+               secret_key = ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               use_https = False
+               signature_v2 = False
+               host_base = 192.168.200.100:6000
+               host_bucket = 192.168.200.100:6000
+               website_endpoint = https://192.168.200.100:6000
+          - name: gitlab-artifact-s3
+            data:
+             connection: |
+               provider: AWS
+               region: minio
+               aws_access_key_id: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+               aws_secret_access_key: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               aws_signature_version: 4
+               host: 192.168.200.100:6000
+               endpoint: "http://192.168.200.100:6000"
+               path_style: true
+         
+
+          - name: aws-creds
+            data:
+                ACCESS_KEY_ID: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
+                ACCESS_SECRET_KEY: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty   
+                     
+                   
+    - repoURL: 'https://cloudnative-pg.io/charts'
+      targetRevision: 0.0.8
+      chart: cluster
+      helm:
+        values: |-
+          cluster:
+            instances: 3
+            annotations:
+              cnpg.io/skipWalArchiving: "enabled"
+            imageName: {{ .Values.spec.registry }}/cloudnative-pg/postgresql:16.1
+            logLevel: warning
+            storage:
+              size: 70Gi
+              storageClass: "local-sc"
+            resources:
+              limits:
+                cpu: '1'
+                memory: 2Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+            initdb:
+              database: gitlab
+            logLevel: "debug"    
+          backups:
+            enabled: false
+            destinationPath: ""
+            endpointURL: http://192.168.200.100:6000
+            immediate: true
+            secret:
+              create: false
+            provider: s3
+            s3:
+              region: "minio"
+              bucket: "gitlab"
+              path: "/db"
+              accessKey: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+              secretKey: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+            wal:
+               compression: ''
+               encryption: ''
+            data:
+              compression: 'gzip'
+              encryption: ''
+              additionalCommandArgs:
+                - "--min-chunk-size=5MB"
+                - "--read-timeout=60"
+                - "-vv"               
+            retentionPolicy: "15d"    
+            scheduledBackups:
+               - name: gitlab-backup
+                 backupOwnerReference: self
+                 schedule: "0 0 */6 * * *" 
+                 method: barmanObjectStore 
+
+  
+    - repoURL: {{ .Values.spec.source.helmURL }}
+      targetRevision: 8.7.1
+      chart: gitlab
+      helm:
+        values: |-
+          certmanager:
+            install: false
+            rbac:
+              create: false
+          shared-secrets:
+            selfsign:
+               image:
+                 repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/cfssl-self-sign
+                 
+          gitlab:
+            toolbox:
+              enabled: true          
+              backups:
+                cron:
+                  enabled: true
+                  schedule: "0 */6 * * *"
+                  extraArgs: " --skip registry,artifacts"
+                objectStorage:
+                  backend: s3
+                  config:
+                    key: connection
+                    secret: gitlab-backup-s3
+              persistence:
+                enabled: true
+                accessMode: ReadWriteOnce
+                size: 10Gi
+                storageClass: local-sc
+              replicas: 1
+            gitlab-shell:
+              enabled: true
+              rbac:
+                create: true
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-shell
+            gitlab-exporter:
+              enabled: false
+              rbac:
+                create: false
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-exporter
+            gitaly:
+              persistence:
+                enabled: true
+                storageClass: local-sc
+                accessMode: ReadWriteOnce
+                size: 10Gi
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitaly
+            gitlab-registry:
+              enabled: true
+              rbac:
+                create: true
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-container-registry
+          gitlab-runner:
+            install: false
+          global:
+            gitlab:
+               license:
+                  secret: gitlab-license
+                  key: license      
+            appConfig:
+              object_store:
+                enabled: false
+                connection:
+                   secret: gitlab-artifact-s3
+                   key: connection
+              backups:
+                tmpBucket: gitlab-tmp
+                bucket: gitlab
+              artifacts:
+                bucket: gitlab-artifacts
+                connection:
+                  key: connection
+                  secret: gitlab-artifact-s3
+                enabled: true
+              lfs:
+                enabled: false
+              omniauth:
+                enabled: false
+              packages:
+                enabled: false
+              uploads:
+                enabled: false
+                proxy_download: true
+            gitlabBase:
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/cloud-native/mirror/images/busybox
+                tag: latest
+            certificates:
+              image:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/certificates
+            communityImages:
+              migrations:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-toolbox-ce
+              sidekiq:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-sidekiq-ce
+              toolbox:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-toolbox-ce
+              webservice:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-webservice-ce
+              workhorse:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-workhorse-ce
+            enterpriseImages:
+              migrations:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-toolbox-ee-crack
+              sidekiq:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-sidekiq-ee-crack
+              toolbox:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-toolbox-ee-crack
+              webservice:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-webservice-ee-crack
+              workhorse:
+                repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-workhorse-ee                
+            edition: ee
+            gitlabVersion: 17.7.0
+            kubectl:
+              image:
+                 repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/kubectl
+            grafana:
+              enabled: false
+              
+            hosts:
+              domain: git.tools.dorsa.dev
+              externalIP: ""
+              gitlab:
+                name: git.tools.dorsa.dev
+                https: false
+              hostSuffix: null
+              https: false
+            ingress:
+              enabled: true
+              install: false
+              configureCertmanager: false
+              class: nginx
+              annotations:
+                 acme.cert-manager.io/http01-edit-in-place: 'true'
+                 cert-manager.io/cluster-issuer: letsencrypt-cloudns              
+                 nginx.ingress.kubernetes.io/proxy-body-size: "0"
+              tls:
+               enabled: true
+               secretName: gitlab-acme-issuer 
+            initialRootPassword:
+              secret: gitlab-root-password
+              key: password
+            kas:
+              enabled: false
+            minio:
+              enabled: false
+            psql:
+              database: gitlab
+              host: gitlab-cluster-rw
+              password:
+                useSecret: true
+                secret: gitlab-cluster-app
+                key: password
+              username: gitlab
+            redis:
+              global:
+                imageRegistry: "{{ .Values.spec.registry }}"            
+              auth:
+                enabled: true
+            registry:
+              enabled: true
+            serviceAccount:
+              enabled: true
+          nginx-ingress:
+            install: false
+            enabled: false
+          postgresql:
+            install: false
+          prometheus:
+            install: false
+          redis:
+            install: true
+            global:
+              storageClass: local-sc
+          registry:
+            enabled: true
+            image:
+              repository: {{ .Values.spec.registry }}/gitlab-org/build/cng/gitlab-container-registry
+              tag: v3.88.1-gitlab            
+          upgradeCheck:
+            enabled: false
+
+    - repoURL: {{ .Values.spec.source.helmURL }}
+      targetRevision: 0.72.0
+      chart: gitlab-runner
+      helm:
+        values: |-
+          probeTimeoutSeconds: 30
+          rbac:
+            create: true
+          hostAliases:
+          - ip: "192.168.208.11"
+            hostnames:
+            - "git.tools.dorsa.dev"
+          image:
+            registry: {{ .Values.spec.registry }}
+            image: gitlab-org/gitlab-runner
+          replicas: 5
+          gitlabUrl: https://git.tools.dorsa.dev
+          runnerToken: glrt-Bx6muND4FmTZJAvnHAMy
+          concurrent: 10
+          runners:
+            config: |
+              [[runners]]
+                 url = "https://git.tools.dorsa.dev"
+                 clone_url = "https://git.tools.dorsa.dev" 
+                [runners.kubernetes]
+                  namespace = "gitlab"
+                  image = "{{ .Values.spec.registry }}/dockerhub/arielkv/dind-glibc:latest"
+                  helper_image = "{{ .Values.spec.registry }}/gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-436955cb"
+                # [runners.cache]
+                #   Type = "s3"
+                #   Path = "runner"
+                #   Shared = true
+                #   [runners.cache.s3]
+                #     ServerAddress = "s3.ir-thr-at1.arvanstorage.ir"
+                #     BucketName = "skyroom-git"
+                #     BucketLocation = "Simin"
+                #     Insecure = false
+                #     AuthenticationType = "access-key"
+            # cache:
+            #   secretName: *gitlab_runner_cache_secret
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: 4
+            requests:
+              memory: 128Mi
+              cpu: 100m

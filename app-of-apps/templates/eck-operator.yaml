@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-160"
+  name: {{ .Values.spec.env }}-eck-operator
+  namespace: argocd
+spec:
+  destination:
+    namespace: eck-operator
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+   automated: {}
+   syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=orphan
+    - ServerSideApply=true
+  sources:                         
+  - repoURL: 'https://helm.elastic.co'
+    targetRevision: 2.15.0
+    chart: eck-operator
+    helm:
+      values: |-
+        image:
+            repository: {{ .Values.spec.registry }}/elastic/eck-operator
+ 
