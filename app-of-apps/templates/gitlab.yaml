@@ -596,7 +596,7 @@ spec:
               host: gitlab-cluster-rw
               password:
                 useSecret: true
-                secret: gitlab-cluster-app
+                secret: tools-gitlab-cluster-app
                 key: password
               username: gitlab
             redis:
@@ -662,7 +662,7 @@ spec:
                 #     BucketLocation = "Simin"
                 #     Insecure = false
                 #     AuthenticationType = "access-key"
-            secret: gitlab-gitlab-runner-secret
+            secret: tools-gitlab-gitlab-runner-secret
           resources:
             limits:
               memory: 4Gi
