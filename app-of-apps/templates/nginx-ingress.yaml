@@ -26,8 +26,8 @@ spec:
         fullnameOverride: private
         controller:
           allowSnippetAnnotations: "true"
-          #extraArgs:
-          #  default-ssl-certificate: "nginx/letsencrypttls"
+          extraArgs:
+            default-ssl-certificate: "cert-manager/wildcard-rimci"
           image:
             registry: {{ .Values.spec.registry }}
             digest: ""
@@ -53,8 +53,8 @@ spec:
         fullnameOverride: public
         controller:
           allowSnippetAnnotations: "true"
-          #extraArgs:
-          #  default-ssl-certificate: "nginx/letsencrypttls" 
+          extraArgs:
+            default-ssl-certificate: "cert-manager/wildcard-rimci" 
           ingressClassResource:
             name: public
             enabled: true
