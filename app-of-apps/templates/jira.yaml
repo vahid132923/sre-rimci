@@ -84,7 +84,7 @@ spec:
 
                           
   - repoURL: '{{ .Values.spec.source.helmURL }}'
-    targetRevision: 9.17.1
+    targetRevision: 10.7.3
     chart: jira
     helm:
       values: |-
