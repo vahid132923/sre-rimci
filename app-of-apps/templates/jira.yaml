@@ -84,7 +84,7 @@ spec:
 
                           
   - repoURL: '{{ .Values.spec.source.helmURL }}'
-    targetRevision: 10.7.3
+    targetRevision: 9.17.1
     chart: jira
     helm:
       values: |-
@@ -93,7 +93,7 @@ spec:
           storageClass: "k8s-lvm-sc"
         image:
            repository: haxqer/jira
-           tag: 9.17.1
+           tag: 10.7.3
         updateStrategy:
            type: RollingUpdate  
            rollingUpdate:
