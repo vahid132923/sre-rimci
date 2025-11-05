@@ -46,7 +46,7 @@ spec:
                                       maxThreads="150" minSpareThreads="25" connectionTimeout="20000" enableLookups="false"
                                       maxHttpHeaderSize="8192" protocol="HTTP/1.1" useBodyEncodingForURI="true" redirectPort="8443"
                                       acceptCount="100" disableUploadTimeout="true" bindOnInit="false" scheme="https"
-                                      proxyName="jira.dorsa.dev" proxyPort="443" secure="true"/>
+                                      proxyName="jira.rimci.dev" proxyPort="443" secure="true"/>
                    
                            
                    
@@ -136,7 +136,7 @@ spec:
 
         ingress:
            enabled: true
-           hostname: jira.dorsa.dev
+           hostname: jira.rimci.dev
            annotations:
               nginx.ingress.kubernetes.io/proxy-body-size: 100m
               nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
@@ -146,7 +146,7 @@ spec:
               nginx.ingress.kubernetes.io/configuration-snippet: |
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;           
-           ingressClassName: public    
+           ingressClassName: nginx    
            tls: true
         resources:
           requests:
