@@ -17,7 +17,7 @@ spec:
     - PrunePropagationPolicy=orphan
     - ServerSideApply=true
   sources:
-  - repoURL: '{{ .Values.spec.source.helmURL }}'
+  - repoURL: 'https://backube.github.io/helm-charts'
     targetRevision: 0.11.0
     chart: volsync 
     helm:
