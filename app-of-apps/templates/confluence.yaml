@@ -70,7 +70,7 @@ spec:
             http: 8090
         ingress:
            enabled: true
-           hostname: docs.dorsa.dev
+           hostname: docs.rimci.dev
            annotations:
               nginx.ingress.kubernetes.io/proxy-body-size: 100m
               nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
@@ -81,7 +81,7 @@ spec:
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;           
            ingressClassName: public    
-           tls: true
+           tls: false
         resources:
           requests:
             cpu: 4
