@@ -127,7 +127,7 @@ spec:
           logLevel: warning
           storage:
             size: 5Gi
-            storageClass: "local-sc"
+            storageClass: "k8s-lvm-sc"
           resources:
             limits:
               cpu: '1'
