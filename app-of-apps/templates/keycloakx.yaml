@@ -76,13 +76,13 @@ spec:
           ingressClassName: public
           rules:
             -
-              host: 'sso.dorsa.dev'
+              host: 'sso.rimci.dev'
               paths:
                 - path: '{{ "{{" }} tpl .Values.http.relativePath $ | trimSuffix "/" {{ "}}" }}/'
                   pathType: Prefix
           tls: 
             - hosts:
-                - sso.dorsa.dev
+                - sso.rimci.dev
               secretName: "sso-acme-issuer"
         
           console:
@@ -96,13 +96,13 @@ spec:
             ingressClassName: public
             rules:
               -
-                host: 'sso.dorsa.dev'
+                host: 'sso.rimci.dev'
                 paths:
                   - path: '{{ "{{" }} tpl .Values.http.relativePath $ | trimSuffix "/" {{ "}}" }}/admin'
                     pathType: Prefix
             tls: 
               - hosts:
-                  - sso.dorsa.dev
+                  - sso.rimci.dev
                 secretName: "sso-acme-issuer"
         proxy:
            mode: xforwarded                
