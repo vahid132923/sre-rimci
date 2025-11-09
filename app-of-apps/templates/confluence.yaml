@@ -27,7 +27,7 @@ spec:
           storageClass: "k8s-lvm-sc"
         image:
            repository: haxqer/confluence
-           tag: 10.0.2
+           tag: 8.9.7
         updateStrategy:
            type: RollingUpdate  
            rollingUpdate:
