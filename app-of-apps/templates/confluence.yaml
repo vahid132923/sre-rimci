@@ -81,7 +81,7 @@ spec:
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;           
            ingressClassName: public    
-           tls: false
+           tls: true
         resources:
           requests:
             cpu: 4
