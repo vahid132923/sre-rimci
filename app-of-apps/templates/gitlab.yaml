@@ -376,7 +376,24 @@ spec:
             data:
                 ACCESS_KEY_ID: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
                 ACCESS_SECRET_KEY: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty   
-                     
+          - name: keycloak-oauth2
+            data:
+              provider: |
+                    name: 'openid_connect'
+                    label: 'LOGIN VIA SSO'
+                    args:
+                      name: 'openid_connect'
+                      scope: ['openid', 'profile', 'email']
+                      response_type: 'code'
+                      issuer: 'https://sso.rimci.dev/auth/realms/rimci'
+                      discovery: true
+                      client_auth_method: 'query'
+                      uid_field: 'preferred_username'
+                      pkce: true
+                      client_options:
+                        identifier: 'gitlab'
+                        secret: 'qoBWG5ew6y2jLfs2XKFRFd5xqoBIyD2r'
+                        redirect_uri: 'https://git.rimci.dev/users/auth/openid_connect/callback'                         
                    
       chart: secrets
     - repoURL: https://cloudnative-pg.io/charts
@@ -528,21 +545,7 @@ spec:
                 blockAutoCreatedUsers: false
                 autoLinkSamlUser: true # Helps link existing users
                 providers:
-                  - name: 'openid_connect'
-                    label: 'LOGIN VIA SSO' # Optional: Text for the login button
-                    args:
-                      name: 'openid_connect'
-                      scope: ['openid', 'profile', 'email']
-                      response_type: 'code'
-                      issuer: 'https://sso.rimci.dev/auth/realms/rimci'
-                      discovery: true
-                      client_auth_method: 'query'
-                      uid_field: 'preferred_username'
-                      pkce: true
-                      client_options:
-                        identifier: 'gitlab'
-                        secret: 'qoBWG5ew6y2jLfs2XKFRFd5xqoBIyD2r'
-                        redirect_uri: 'https://git.rimci.dev/users/auth/openid_connect/callback'
+                 - secret: keycloak-oauth2
               packages:
                 enabled: false
               uploads:
