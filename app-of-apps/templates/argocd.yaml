@@ -38,10 +38,10 @@ spec:
              timeout.reconciliation.jitter: 0
              timeout.reconciliation: 0
              oidc.config: |
-               name: Keycloak
+               name: SSO
                issuer: https://sso.rimci.dev/auth/realms/rimci
                clientID: argocd
-               clientSecret: 5iYy5W994MVDH7M6gfHEery8hbg6M6HU 
+               clientSecret: UF5Uyu02E6XS8ypmv6F6diHotZ6WjFjG 
                requestedScopes: ["openid", "profile", "email", "groups"] 
                requestedIDTokenClaims:
                  groups:
