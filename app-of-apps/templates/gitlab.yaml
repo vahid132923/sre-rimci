@@ -542,8 +542,8 @@ spec:
               omniauth:
                 enabled: true
                 allowSingleSignOn: ['openid_connect']
-                blockAutoCreatedUsers: false
-                autoLinkSamlUser: true # Helps link existing users
+                blockAutoCreatedUsers: true
+                autoLinkSamlUser: true
                 providers:
                  - secret: keycloak-oauth2
               packages:
