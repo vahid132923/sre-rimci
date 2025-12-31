@@ -26,7 +26,7 @@ spec:
          victoria-metrics-operator:
             global:
               image:
-                 registry: { .Values.spec.registry }}      
+                 registry: {{ .Values.spec.registry }}      
             env:
             - name: VM_VMALERTDEFAULT_CONFIGRELOADIMAGE    
               value: {{ .Values.spec.registry }}/jimmidyson/configmap-reload:v0.3.0
