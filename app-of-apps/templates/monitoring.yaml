@@ -20,7 +20,7 @@ spec:
   sources:
   - repoURL: 'https://victoriametrics.github.io/helm-charts/'
     chart: victoria-metrics-k8s-stack
-    targetRevision: 0.24.5
+    targetRevision: 0.66.1
     helm:
       values: |-
          victoria-metrics-operator:
@@ -34,7 +34,7 @@ spec:
             - name: VM_VMAGENTDEFAULT_CONFIGRELOADIMAGE	
               value: {{ .Values.spec.registry }}/prometheus-operator/prometheus-config-reloader:v0.68.0  
             cleanupImage:
-               repository: {{ .Values.spec.registry }}/bitnami/kubectl
+               repository: {{ .Values.spec.registry }}/rancher/kubectl
          vmsingle:
             enabled: false      
          vmcluster:
@@ -93,11 +93,11 @@ spec:
                      acme.cert-manager.io/http01-edit-in-place: 'true'
                      cert-manager.io/cluster-issuer: letsencrypt-cloudns                   
                   hosts:
-                    - vmselect.tools.dorsa.dev
+                    - vmselect.rimci.dev
                   tls:
                     - secretName: vmselect-acme-issuer
                       hosts:
-                        - vmselect.tools.dorsa.dev                       
+                        - vmselect.rimci.dev                       
 
                insert:
                   enabled: true
@@ -110,11 +110,11 @@ spec:
                     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
                     nginx.ingress.kubernetes.io/client-header-buffer-size: "50m"
                   hosts:
-                    - vminsert.tools.dorsa.dev
+                    - vminsert.rimci.dev
                   tls:
                     - secretName: vminsert-acme-issuer
                       hosts:
-                        - vminsert.tools.dorsa.dev                                
+                        - vminsert.rimci.dev                                
          alertmanager:
              spec:
                 image: 
@@ -159,12 +159,12 @@ spec:
                        - cluster
                        - namespace
 
-                 receivers:
-                   - name: blackhole
-                   - name: devops
-                     webhook_configs:
-                       - url: 'http://192.168.200.44/webhook/ad794e23-cb18-4dbf-9644-263624fd5b90/alert_devops'
-                         send_resolved: true
+                 #receivers:
+                 #  - name: blackhole
+                 #  - name: devops
+                 #    webhook_configs:
+                 #      - url: 'http://192.168.200.44/webhook/ad794e23-cb18-4dbf-9644-263624fd5b90/alert_devops'
+                 #        send_resolved: true
                    
              
          vmalert:
@@ -177,19 +177,19 @@ spec:
                   repository: {{ .Values.spec.registry }}/victoriametrics/vmagent
                 externalLabels:
                   cluster: tools
-                inlineScrapeConfig: |
-                  - job_name: "cdn"
-                    static_configs:
-                    - targets: ["192.168.207.250:9100"]      
-                  - job_name: "cdn_vts"
-                    static_configs:
-                    - targets: ["192.168.207.250:8080/status"]
-                  - job_name: "dorsa-postgres"
-                    static_configs:
-                    - targets: ["192.168.200.100:9187"]
-                  - job_name: "kafka-exporter"
-                    static_configs:
-                    - targets: ["192.168.200.100:9308"]
+                #inlineScrapeConfig: |
+                #  - job_name: "cdn"
+                #    static_configs:
+                #    - targets: ["192.168.207.250:9100"]      
+                #  - job_name: "cdn_vts"
+                #    static_configs:
+                #    - targets: ["192.168.207.250:8080/status"]
+                #  - job_name: "dorsa-postgres"
+                #    static_configs:
+                #    - targets: ["192.168.200.100:9187"]
+                #  - job_name: "kafka-exporter"
+                #    static_configs:
+                #    - targets: ["192.168.200.100:9308"]
          grafana:
            global:
              imageRegistry: {{ .Values.spec.registry }}
@@ -207,168 +207,13 @@ spec:
                repository: busybox
                tag: latest
            datasources:
-             datasources.yaml:
-               apiVersion: 1
-               datasources:
-               - name: "ClickHouse"
-                 type: "grafana-clickhouse-datasource"
-                 jsonData:
-                   defaultDatabase: "dorsadb"  # Replace with your actual database name
-                   port: 9000  # Native port for ClickHouse
-                   host: "192.168.200.110"  # IP address of the ClickHouse server
-                   username: "default"  # Username for ClickHouse
-                   tlsSkipVerify: true  # Set to true if SSL/TLS is off
-                   protocol: "native"  # Use native protocol for ClickHouse (9000)
-                 secureJsonData:
-                   password: "@z4D0r5@"  # Password for ClickHouse user
-          #   datasources.yaml:
-          #     apiVersion: 1
-          #     datasources:
-          #     - name: Prometheus
-          #       type: prometheus
-          #       url: http://prometheus-prometheus-server
-          #       access: proxy
-          #       isDefault: true  
            downloadDashboardsImage:
                registry: {{ .Values.spec.registry }}
-           dashboardProviders:
-               dashboardproviders.yaml:
-                 apiVersion: 1
-                 providers:
-                 - name: 'default'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/default     
-                 - name: 'minio'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/minio  
-                 - name: 'postgres'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/postgres
-                 - name: 'kpidashboard'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/kpidashboard                     
-                 - name: 'nodeexporterfull'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/nodeexporterfull
-                 - name: 'nginxvts'
-                   orgId: 1
-                   folder: ''
-                   type: file
-                   disableDeletion: false
-                   editable: true
-                   options:
-                     path: /var/lib/grafana/dashboards/nginxvts
-           dashboards:
-             minio:
-               minio:
-                 url: https://git.tools.dorsa.dev/root/grafanadashboard/-/raw/main/minio.json
-                 token: '' 
-             kpidashboard:
-               raffle:
-                 url: https://git.tools.dorsa.dev/root/grafanadashboard/-/raw/main/KPI-Dashboard-Raffle.json
-                 token: '' 
-             nginxvts:
-               nginxvts:
-                 url: https://git.tools.dorsa.dev/root/grafanadashboard/-/raw/main/nginx_vts.json
-                 token: ''                                                   
-             postgres:  
-               postgres:
-                 gnetId: 9628
-                 revision: 7
-                 datasource: VictoriaMetrics
-             nodeexporterfull:
-               nodeexporterfull:
-                 url: https://git.tools.dorsa.dev/root/grafanadashboard/-/raw/main/node_exporter_full.json
-                 token: ''  
-                 datasource: VictoriaMetrics
-             nginxvts:
-               nginxvts:
-                 url: https://git.tools.dorsa.dev/root/grafanadashboard/-/raw/main/nginx_vts.json
-                 token: ''  
-                 datasource: VictoriaMetrics
            ingress:
              enabled: true
              ingressClassName: public
              hosts:
-               - fanoos.dorsa.dev
-           #plugins:
-           #  - https://repo.dorsa.dev/repository/github.com/clickhouse-datasource/releases/download/v4.5.0/grafana-clickhouse-datasource-4.5.0.zip,clickhouse-datasource
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/integration-artifacts/marcusolsson-treemap-panel/release/2.0.1/any/marcusolsson-treemap-panel-2.0.1.any.zip,marcusolsson-treemap-panel
-           #  - https://repo.dorsa.dev/repository/github.com/grafana/google-sheets-datasource/releases/download/v2.0.1/grafana-googlesheets-datasource-2.0.1.zip,google-sheets-datasource  
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/netsage-bumpchart-panel/release/1.1.3/netsage-bumpchart-panel-1.1.3.zip,netsage-bumpchart-panel
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/anyline-rangeslider-panel/release/1.2.9/anyline-rangeslider-panel-1.2.9.zip,anyline-rangeslider-panel
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/integrationmatters-comparison-panel/release/1.1.0/integrationmatters-comparison-panel-1.1.0.zip,integrationmatters-comparison-panel
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/marcusolsson-calendar-panel/release/3.9.0/marcusolsson-calendar-panel-3.9.0.zip,marcusolsson-calendar-panel
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/volkovlabs-echarts-panel/release/6.6.0/volkovlabs-echarts-panel-6.6.0.zip,volkovlabs-echarts-panel
-           #  - https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/digrich-bubblechart-panel/release/2.0.1/digrich-bubblechart-panel-2.0.1.zip,digrich-bubblechart-panel
-           extraInitContainers:
-             - name: local-plugins-downloader
-               image: docker.dorsa.dev/busybox
-               command:
-                 - /bin/sh
-                 - -c
-                 - |
-                   set -euo pipefail
-                   mkdir -p /var/lib/grafana/plugins
-                   cd /var/lib/grafana/plugins
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/github.com/grafana/clickhouse-datasource/releases/download/v4.5.0/grafana-clickhouse-datasource-4.5.0.zip -O clickhouse-grafana.zip
-                   unzip clickhouse-grafana.zip
-                   rm clickhouse-grafana.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/integration-artifacts/marcusolsson-treemap-panel/release/2.0.1/any/marcusolsson-treemap-panel-2.0.1.any.zip -O treemap-grafana.zip
-                   unzip treemap-grafana.zip
-                   rm treemap-grafana.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/github.com/grafana/google-sheets-datasource/releases/download/v2.0.1/grafana-googlesheets-datasource-2.0.1.zip -O grafana-googlesheets.zip
-                   unzip grafana-googlesheets.zip
-                   rm grafana-googlesheets.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/anyline-rangeslider-panel/release/1.2.9/anyline-rangeslider-panel-1.2.9.zip -O rangeslider.zip
-                   unzip rangeslider.zip
-                   rm rangeslider.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/integrationmatters-comparison-panel/release/1.1.0/integrationmatters-comparison-panel-1.1.0.zip -O comparison.zip
-                   unzip comparison.zip
-                   rm comparison.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/marcusolsson-calendar-panel/release/3.9.0/marcusolsson-calendar-panel-3.9.0.zip -O calendar.zip
-                   unzip calendar.zip
-                   rm calendar.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/volkovlabs-echarts-panel/release/6.6.0/volkovlabs-echarts-panel-6.6.0.zip -O echarts.zip
-                   unzip echarts.zip
-                   rm echarts.zip
-                   wget --no-check-certificate https://repo.dorsa.dev/repository/storage.googleapis.com/plugins-community/digrich-bubblechart-panel/release/2.0.1/digrich-bubblechart-panel-2.0.1.zip -O bubblechart.zip
-                   unzip bubblechart.zip
-                   rm bubblechart.zip
-               volumeMounts:
-                 - name: grafana-plugins
-                   mountPath: /var/lib/grafana
-           extraContainerVolumes:
-             - name: grafana-plugins
-               emptyDir: {}
-           extraVolumeMounts:
-             - name: grafana-plugins
-               mountPath: /var/lib/grafana/plugins
+               - fanoos.rimci.dev
          prometheus-node-exporter:
              image:
                 registry: {{ .Values.spec.registry }}
