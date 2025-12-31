@@ -41,8 +41,6 @@ spec:
             spec:
               retentionPeriod: "30d"
               vmstorage:
-                 #image:
-                 #   repository: {{ .Values.spec.registry }}/victoriametrics/vmstorage
                  storage:
                     volumeClaimTemplate:
                        spec:
@@ -58,8 +56,6 @@ spec:
                        cpu: 500m
                        memory: 512Mi
               vmselect:
-                 #image:
-                 #   repository: {{ .Values.spec.registry }}/victoriametrics/vmselect
                  storage:
                     volumeClaimTemplate:
                        spec:
@@ -75,8 +71,6 @@ spec:
                        cpu: 500m
                        memory: 512Mi   
               vminsert:
-                 #image:
-                 #   repository: {{ .Values.spec.registry }}/victoriametrics/vminsert
                  resources:
                     limits:
                        cpu: 500m
@@ -162,14 +156,8 @@ spec:
                  #        send_resolved: true
                    
              
-         vmalert:
-            #spec:
-            #   image: 
-            #     repository: {{ .Values.spec.registry }}/victoriametrics/vmalert
          vmagent:
              spec:
-                #image: 
-                #  repository: {{ .Values.spec.registry }}/victoriametrics/vmagent
                 externalLabels:
                   cluster: tools
                 #inlineScrapeConfig: |
