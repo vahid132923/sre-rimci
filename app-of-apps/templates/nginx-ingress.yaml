@@ -28,6 +28,11 @@ spec:
           allowSnippetAnnotations: "true"
           extraArgs:
             default-ssl-certificate: "cert-manager/wildcard-rimci"
+          ingressClassResource:
+            name: private
+            enabled: true
+            default: false
+            controllerValue: "k8s.io/private-ingress-nginx"             
           image:
             registry: {{ .Values.spec.registry }}
             digest: ""
