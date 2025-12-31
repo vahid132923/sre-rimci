@@ -24,9 +24,9 @@ spec:
     helm:
       values: |-
          victoria-metrics-operator:
-            global:
-              image:
-                 registry: {{ .Values.spec.registry }}      
+            image:
+              registry: {{ .Values.spec.registry }}
+              repository: victoriametrics/operator       
             env:
             - name: VM_VMALERTDEFAULT_CONFIGRELOADIMAGE    
               value: {{ .Values.spec.registry }}/jimmidyson/configmap-reload:v0.3.0
