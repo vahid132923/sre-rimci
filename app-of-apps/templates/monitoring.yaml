@@ -26,14 +26,7 @@ spec:
          victoria-metrics-operator:
             image:
               registry: {{ .Values.spec.registry }}
-              repository: victoriametrics/operator       
-            env:
-            - name: VM_VMALERTDEFAULT_CONFIGRELOADIMAGE    
-              value: {{ .Values.spec.registry }}/jimmidyson/configmap-reload:v0.3.0
-            - name: VM_VMALERTMANAGER_CONFIGRELOADERIMAGE	
-              value: {{ .Values.spec.registry }}/jimmidyson/configmap-reload:v0.3.0  
-            - name: VM_VMAGENTDEFAULT_CONFIGRELOADIMAGE	
-              value: {{ .Values.spec.registry }}/prometheus-operator/prometheus-config-reloader:v0.68.0  
+              repository: victoriametrics/operator 
             cleanupImage:
                repository: {{ .Values.spec.registry }}/rancher/kubectl
          vmsingle:
