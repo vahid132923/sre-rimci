@@ -26,7 +26,12 @@ spec:
          victoria-metrics-operator:
             image:
               registry: {{ .Values.spec.registry }}
-              repository: victoriametrics/operator 
+              repository: victoriametrics/operator       
+            env:
+              - name: VM_CONTAINERREGISTRY
+                value: "{{ .Values.spec.registry }}"
+              - name: VM_CONFIG_RELOADER_IMAGE
+                value: victoriametrics/operator:config-reloader-v0.66.1 
             cleanupImage:
                repository: {{ .Values.spec.registry }}/rancher/kubectl
          vmsingle:
