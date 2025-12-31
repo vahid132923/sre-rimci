@@ -88,10 +88,8 @@ spec:
             ingress:
                select:
                   enabled: true
-                  ingressClassName: "nginx"
-                  annotations:
-                     acme.cert-manager.io/http01-edit-in-place: 'true'
-                     cert-manager.io/cluster-issuer: letsencrypt-cloudns                   
+                  ingressClassName: private
+                  annotations: {}                 
                   hosts:
                     - vmselect.rimci.dev
                   tls:
@@ -101,10 +99,8 @@ spec:
 
                insert:
                   enabled: true
-                  ingressClassName: "nginx"
-                  annotations:
-                    acme.cert-manager.io/http01-edit-in-place: 'true'
-                    cert-manager.io/cluster-issuer: letsencrypt-cloudns                   
+                  ingressClassName: private
+                  annotations:                 
                     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
                     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
                     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
@@ -211,7 +207,7 @@ spec:
                registry: {{ .Values.spec.registry }}
            ingress:
              enabled: true
-             ingressClassName: public
+             ingressClassName: private
              hosts:
                - fanoos.rimci.dev
          prometheus-node-exporter:
