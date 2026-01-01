@@ -44,13 +44,13 @@ spec:
                   - name: elasticsearch
                     env:
                     - name: ES_JAVA_OPTS
-                      value: -Xms2g -Xmx2g        
+                      value: -Xms3g -Xmx3g        
                     resources:
                       limits:
-                        memory: 4Gi
+                        memory: 6Gi
                         cpu: 3
                       requests:  
-                        memory: 4Gi
+                        memory: 6Gi
                         cpu: 3              
                   affinity:
                     podAntiAffinity:
@@ -59,7 +59,7 @@ spec:
                         podAffinityTerm:
                           labelSelector:
                             matchLabels:
-                              elasticsearch.k8s.elastic.co/cluster-name: {{ .Values.clustername }}
+                              elasticsearch.k8s.elastic.co/cluster-name: elasticsearch-log
                           topologyKey: kubernetes.io/hostname
               volumeClaimTemplates:
               - metadata:
@@ -69,14 +69,12 @@ spec:
                   - ReadWriteOnce
                   resources:
                     requests:
-                      storage: 30Gi
+                      storage: 40Gi
                   storageClassName: k8s-lvm-sc        
           
             ingress:
               enabled: true
-              annotations: 
-                 acme.cert-manager.io/http01-edit-in-place: 'true'
-                 cert-manager.io/cluster-issuer: letsencrypt-cloudns              
+              annotations:               
                  nginx.ingress.kubernetes.io/proxy-body-size: "0"
                  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
                  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"                 
@@ -84,10 +82,10 @@ spec:
               labels: {}
               pathType: Prefix
               hosts:
-                - host: elastic.tools.dorsa.dev
+                - host: elastic-log.rimci.dev
                   path: /
               tls:
-                enabled: true
+                enabled: false
           eck-kibana:
             version: 8.17.0
             image: {{ .Values.spec.registry }}/elastic/kibana:8.17.0
@@ -114,15 +112,13 @@ spec:
                       cpu: 2    
             ingress:
               enabled: true
-              annotations: 
-                  acme.cert-manager.io/http01-edit-in-place: 'true'
-                  cert-manager.io/cluster-issuer: letsencrypt-cloudns
+              annotations: {}
               className: nginx
               labels: {}
               pathType: Prefix
               hosts:
-                - host: kibana.tools.dorsa.dev
+                - host: kibana-log.rimci.dev
                   path: /
               tls:
-                enabled: true              
+                enabled: false              
           
