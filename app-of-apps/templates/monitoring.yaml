@@ -183,7 +183,9 @@ spec:
            assertNoLeakedSecrets: false
            grafana.ini:
             grafana_net:
-              url: https://fanoos.rimci.dev:443           
+              url: https://fanoos.rimci.dev  
+            server:
+               root_url: https://fanoos.rimci.dev         
             auth.generic_oauth:
              enabled: true
              name: SSO 
