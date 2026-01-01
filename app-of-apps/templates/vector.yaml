@@ -17,7 +17,7 @@ spec:
     - ServerSideApply=true
   source:
     repoURL: 'https://helm.vector.dev'
-    targetRevision: "0.38.1"
+    targetRevision: "0.49.0"
     chart: vector
     helm:
       values: |-
@@ -41,11 +41,11 @@ spec:
               auth:
                 strategy: basic
                 user: elastic
-                password: t6yw3Teqb960Quqfg86O528M  
+                password: 97CpYis42iGZ4rAq7956wb0j  
               api_version: auto
               compression: none
               endpoints:
-                - https://elastic.tools.dorsa.dev
+                - https://elastic-log.rimci.dev
               id_key: id
               mode: bulk
               bulk:
