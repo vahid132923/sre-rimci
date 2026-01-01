@@ -182,6 +182,8 @@ spec:
            adminPassword: 55UItzBingDjcbEzr5Tz09ETcHMU6imT3h7Oyxm0 
            assertNoLeakedSecrets: false
            grafana.ini:
+            grafana_net:
+              url: https://fanoos.rimci.dev           
             auth.generic_oauth:
              enabled: true
              name: SSO 
@@ -192,9 +194,9 @@ spec:
              email_attribute_path: email
              login_attribute_path: username
              name_attribute_path: full_name
-             auth_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/auth
-             token_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/token
-             api_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/userinfo
+             auth_url: https://sso.rimci.dev/auth/realms/rimci/protocol/openid-connect/auth
+             token_url: https://sso.rimci.dev/auth/realms/rimci/protocol/openid-connect/token
+             api_url: https://sso.rimci.dev/auth/realms/rimci/protocol/openid-connect/userinfo
              role_attribute_path: contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'           
            persistence:
              enabled: true
