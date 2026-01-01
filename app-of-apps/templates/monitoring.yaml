@@ -184,7 +184,7 @@ spec:
            grafana.ini:
             auth.generic_oauth:
              enabled: true
-             name: LOGIN VIA SSO
+             name: Via SSO
              allow_sign_up: false
              client_id: grafana
              client_secret: YOUR_APP_CLIENT_SECRET
