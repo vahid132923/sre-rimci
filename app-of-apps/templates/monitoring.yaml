@@ -180,7 +180,7 @@ spec:
               dashboards:
                 multicluster: true     
            adminPassword: 55UItzBingDjcbEzr5Tz09ETcHMU6imT3h7Oyxm0 
-           grafana.ini
+           grafana.ini:
             auth.generic_oauth:
              enabled: true
              name: LOGIN VIA SSO
