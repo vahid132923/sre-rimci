@@ -58,6 +58,8 @@ spec:
       releaseName: public
       values: |-
         fullnameOverride: public
+        tcp:
+          22: "gitlab/gitlab-gitlab-shell:22"        
         controller:
           allowSnippetAnnotations: "true"
           extraArgs:
