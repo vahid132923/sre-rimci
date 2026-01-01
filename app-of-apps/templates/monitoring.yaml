@@ -178,8 +178,23 @@ spec:
              imageRegistry: {{ .Values.spec.registry }}
            sidecar:
               dashboards:
-                multicluster: true
-           adminPassword: 55UItzBingDjcbEzr5Tz09ETcHMU6imT3h7Oyxm0   
+                multicluster: true     
+           adminPassword: 55UItzBingDjcbEzr5Tz09ETcHMU6imT3h7Oyxm0 
+           grafana.ini
+            auth.generic_oauth:
+             enabled: true
+             name: LOGIN VIA SSO
+             allow_sign_up: false
+             client_id: grafana
+             client_secret: YOUR_APP_CLIENT_SECRET
+             scopes: openid email profile offline_access roles
+             email_attribute_path: email
+             login_attribute_path: username
+             name_attribute_path: full_name
+             auth_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/auth
+             token_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/token
+             api_url: https://sso.rimci.dev/realms/rimci/protocol/openid-connect/userinfo
+             role_attribute_path: contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'           
            persistence:
              enabled: true
              storageClassName: k8s-lvm-sc
