@@ -80,11 +80,11 @@ spec:
         config:
           registries: 
            - name: haminregistry
-             api_url: https://docker.hamintech.ir
+             api_url: https://h.docker.hamintech.ir
              ping: yes
              insecure: yes
              credentials: env:hamin_CRED
-             prefix: docker.hamintech.ir 
+             prefix: h.docker.hamintech.ir 
              credsexpire: 24h         
           logLevel: "debug"         
           gitCommitUser: "argo-image-updater"
