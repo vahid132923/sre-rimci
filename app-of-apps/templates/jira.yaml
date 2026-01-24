@@ -123,9 +123,9 @@ spec:
            - name: CATALINA_CONNECTOR_SECURE
              value: "true"             
            - name: CATALINA_OPTS
-             value: "-Dupm.plugin.upload.enabled=true"              
+             value: "-Xms4g -Xmx4g -Dupm.plugin.upload.enabled=true ${CATALINA_OPTS}"
         #   - name: JVM_CODE_CACHE_ARGS
-        #     value: '-XX:InitialCodeCacheSize=1g -XX:ReservedCodeCacheSize=1g' 
+        #     value: '-XX:InitialCodeCacheSize=4g -XX:ReservedCodeCacheSize=4g' 
         persistence:
           enabled: true  
           size: 25Gi
@@ -288,4 +288,5 @@ spec:
               memory: 500Mi                                
           service:
             type: ClusterIP
+
 
