@@ -43,8 +43,6 @@ spec:
     description: Read-only privileges to dns
     policies:
     - p, proj:dns:dns-read-only, applications, get, dns/*, allow
-    - p, proj:dns:dns-read-only, applications, update, dns/*, allow
-    - p, proj:dns:dns-read-only, applications, sync, dns/*, allow
     groups:
     - dns-read-only
 
@@ -52,8 +50,6 @@ spec:
     description: Read-only privileges to dns
     policies:
     - p, proj:dns:dns-dev-read-only, applications, get, dns-dev/*, allow
-    - p, proj:dns:dns-dev-read-only, applications, update, dns-dev/*, allow
-    - p, proj:dns:dns-dev-read-only, applications, sync, dns-dev/*, allow
     groups:
     - dns-dev-read-only
 
@@ -61,8 +57,6 @@ spec:
     description: Read-only privileges to dns
     policies:
     - p, proj:dns:dns-stage-read-only, applications, get, dns-stage/*, allow
-    - p, proj:dns:dns-stage-read-only, applications, update, dns-stage/*, allow
-    - p, proj:dns:dns-stage-read-only, applications, sync, dns-stage/*, allow
     groups:
     - dns-stage-read-only
 
@@ -70,10 +64,46 @@ spec:
     description: Read-only privileges to dns
     policies:
     - p, proj:dns:dns-prod-read-only, applications, get, dns-prod/*, allow
-    - p, proj:dns:dns-prod-read-only, applications, update, dns-prod/*, allow
-    - p, proj:dns:dns-prod-read-only, applications, sync, dns-prod/*, allow
     groups:
-    - dns-prod-read-only    
+    - dns-prod-read-only  
+
+
+  # A role which provides editor access to all applications in the project
+  - name: dns-editor
+    description: editor privileges to dns
+    policies:
+    - p, proj:dns:dns-editor, applications, get, dns/*, allow
+    - p, proj:dns:dns-editor, applications, update, dns/*, allow
+    - p, proj:dns:dns-editor, applications, sync, dns/*, allow
+    groups:
+    - dns-editor
+
+  - name: dns-dev-editor
+    description: editor privileges to dns
+    policies:
+    - p, proj:dns:dns-dev-editor, applications, get, dns-dev/*, allow
+    - p, proj:dns:dns-dev-editor, applications, update, dns-dev/*, allow
+    - p, proj:dns:dns-dev-editor, applications, sync, dns-dev/*, allow
+    groups:
+    - dns-dev-editor
+
+  - name: dns-stage-editor
+    description: editor privileges to dns
+    policies:
+    - p, proj:dns:dns-stage-editor, applications, get, dns-stage/*, allow
+    - p, proj:dns:dns-stage-editor, applications, update, dns-stage/*, allow
+    - p, proj:dns:dns-stage-editor, applications, sync, dns-stage/*, allow
+    groups:
+    - dns-stage-editor
+
+  - name: dns-prod-editor
+    description: editor privileges to dns
+    policies:
+    - p, proj:dns:dns-prod-editor, applications, get, dns-prod/*, allow
+    - p, proj:dns:dns-prod-editor, applications, update, dns-prod/*, allow
+    - p, proj:dns:dns-prod-editor, applications, sync, dns-prod/*, allow
+    groups:
+    - dns-prod-editor    
 
 
   # A role which provides admin access to all applications in the project
