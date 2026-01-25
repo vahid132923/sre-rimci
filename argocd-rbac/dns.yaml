@@ -48,6 +48,35 @@ spec:
     groups:
     - dns-read-only
 
+  - name: dns-dev-read-only
+    description: Read-only privileges to dns
+    policies:
+    - p, proj:dns:dns-dev-read-only, applications, get, dns-dev/*, allow
+    - p, proj:dns:dns-dev-read-only, applications, update, dns-dev/*, allow
+    - p, proj:dns:dns-dev-read-only, applications, sync, dns-dev/*, allow
+    groups:
+    - dns-dev-read-only
+
+  - name: dns-stage-read-only
+    description: Read-only privileges to dns
+    policies:
+    - p, proj:dns:dns-stage-read-only, applications, get, dns-stage/*, allow
+    - p, proj:dns:dns-stage-read-only, applications, update, dns-stage/*, allow
+    - p, proj:dns:dns-stage-read-only, applications, sync, dns-stage/*, allow
+    groups:
+    - dns-stage-read-only
+
+  - name: dns-prod-read-only
+    description: Read-only privileges to dns
+    policies:
+    - p, proj:dns:dns-prod-read-only, applications, get, dns-prod/*, allow
+    - p, proj:dns:dns-prod-read-only, applications, update, dns-prod/*, allow
+    - p, proj:dns:dns-prod-read-only, applications, sync, dns-prod/*, allow
+    groups:
+    - dns-prod-read-only    
+
+
+  # A role which provides admin access to all applications in the project
   - name: dns-admin
     description: admin privileges to dns
     policies:
@@ -55,6 +84,32 @@ spec:
     - p, proj:dns:dns-admin, applications, delete, dns/*, deny
     groups:
     - dns-admin
+
+  - name: dns-dev-admin
+    description: admin privileges to dns
+    policies:
+    - p, proj:dns:dns-dev-admin, applications, *, dns-dev/*, allow
+    - p, proj:dns:dns-dev-admin, applications, delete, dns-dev/*, deny
+    groups:
+    - dns-dev-admin
+
+  - name: dns-stage-admin
+    description: admin privileges to dns
+    policies:
+    - p, proj:dns:dns-stage-admin, applications, *, dns-stage/*, allow
+    - p, proj:dns:dns-stage-admin, applications, delete, dns-stage/*, deny
+    groups:
+    - dns-stage-admin  
+
+  - name: dns-prod-admin
+    description: admin privileges to dns
+    policies:
+    - p, proj:dns:dns-prod-admin, applications, *, dns-prod/*, allow
+    - p, proj:dns:dns-prod-admin, applications, delete, dns-prod/*, deny
+    groups:
+    - dns-prod-admin
+
+
 
 
 
