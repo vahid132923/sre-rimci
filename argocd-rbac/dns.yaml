@@ -18,13 +18,13 @@ spec:
   # Destination clusters can be identified by 'server', 'name', or both.
   destinations:
   - namespace: '*'
-    server: https://lbdev.prod.rimci.dev:6443
+    server: https://lbdev.rimci.dev:6443
     name: dev-cluster
   - namespace: '*'
-    server: https://lbprod.prod.rimci.dev:6443
+    server: https://lbprod.rimci.dev:6443
     name: prod-cluster  
   - namespace: '*'
-    server: https://lbstage.prod.rimci.dev:6443
+    server: https://lbstage.rimci.dev:6443
     name: stage-cluster      
 
   # Deny all cluster-scoped resources from being created, except for Namespace
