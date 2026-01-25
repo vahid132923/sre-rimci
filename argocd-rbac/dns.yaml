@@ -75,6 +75,7 @@ spec:
     - p, proj:dns:dns-editor, applications, get, dns/*, allow
     - p, proj:dns:dns-editor, applications, update, dns/*, allow
     - p, proj:dns:dns-editor, applications, sync, dns/*, allow
+    - p, proj:dns:dns-editor, exec, create, dns/*, allow
     groups:
     - dns-editor
 
@@ -84,6 +85,7 @@ spec:
     - p, proj:dns:dns-dev-editor, applications, get, dns-dev/*, allow
     - p, proj:dns:dns-dev-editor, applications, update, dns-dev/*, allow
     - p, proj:dns:dns-dev-editor, applications, sync, dns-dev/*, allow
+    - p, proj:dns:dns-dev-editor, exec, create, dns-dev/*, allow    
     groups:
     - dns-dev-editor
 
@@ -93,6 +95,7 @@ spec:
     - p, proj:dns:dns-stage-editor, applications, get, dns-stage/*, allow
     - p, proj:dns:dns-stage-editor, applications, update, dns-stage/*, allow
     - p, proj:dns:dns-stage-editor, applications, sync, dns-stage/*, allow
+    - p, proj:dns:dns-stage-editor, exec, create, dns-stage/*, allow    
     groups:
     - dns-stage-editor
 
@@ -102,6 +105,7 @@ spec:
     - p, proj:dns:dns-prod-editor, applications, get, dns-prod/*, allow
     - p, proj:dns:dns-prod-editor, applications, update, dns-prod/*, allow
     - p, proj:dns:dns-prod-editor, applications, sync, dns-prod/*, allow
+    - p, proj:dns:dns-prod-editor, exec, create, dns-prod/*, allow    
     groups:
     - dns-prod-editor    
 
