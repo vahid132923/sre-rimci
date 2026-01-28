@@ -79,20 +79,20 @@ spec:
         image:
           repository: {{ .Values.spec.registry }}/argoprojlabs/argocd-image-updater      
         extraEnv:
-          - name: hamin_CRED
+          - name: rimci_CRED
             value: "admin:HTpIIYJgyJ3mhbNLdBF0"        
         config:
           registries: 
-           - name: haminregistry
-             api_url: https://h.docker.hamintech.ir
+           - name: rimciregistry
+             api_url: https://h.docker.rimci.dev
              ping: yes
              insecure: yes
-             credentials: env:hamin_CRED
-             prefix: h.docker.hamintech.ir 
+             credentials: env:rimci_CRED
+             prefix: h.docker.rimci.dev 
              credsexpire: 24h         
           logLevel: "debug"         
           gitCommitUser: "argo-image-updater"
-          gitCommitMail: "argo-image-updater@hamin.dev"
+          gitCommitMail: "argo-image-updater@rimci.dev"
           logLevel: "debug"
         extraArgs:
            - --interval
