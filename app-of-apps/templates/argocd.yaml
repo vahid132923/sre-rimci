@@ -23,6 +23,10 @@ spec:
     helm:
       values: |-
         global:
+          hostAliases:
+           - ip: "172.16.9.250"
+             hostnames:
+             - "sso.rimci.dev"       
           image:
              repository: {{ .Values.spec.registry }}/argoproj/argocd
           domain: delivery.rimci.dev 
