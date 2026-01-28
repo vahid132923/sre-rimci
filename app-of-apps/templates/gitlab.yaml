@@ -454,7 +454,7 @@ spec:
                  schedule: "0 0 */6 * * *" 
                  method: barmanObjectStore 
       chart: cluster
-    - repoURL: https://repo.hamintech.ir/repository/helmhosted
+    - repoURL: https://repo.rimci.dev/repository/helmhosted
       targetRevision: 9.3.2
       helm:
         values: |-
@@ -648,7 +648,7 @@ spec:
           upgradeCheck:
             enabled: false
       chart: gitlab
-    - repoURL: https://repo.hamintech.ir/repository/helmhosted
+    - repoURL: https://repo.rimci.dev/repository/helmhosted
       targetRevision: 0.80.1
       helm:
         values: |-
