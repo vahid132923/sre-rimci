@@ -116,7 +116,7 @@ spec:
     policies:
     - p, proj:dns:dns-admin, applications, *, dns/*, allow
     - p, proj:dns:dns-admin, exec, create, dns/*, allow
-    - p, proj:dns:dns-admin, applications/logs, get, */*, allow    
+    - p, proj:dns:dns-admin, logs, get, */*, allow    
     - p, proj:dns:dns-admin, applications, delete, dns/*, deny
     groups:
     - dns-admin
