@@ -76,6 +76,7 @@ spec:
     - p, proj:dns:dns-editor, applications, update, dns/*, allow
     - p, proj:dns:dns-editor, applications, sync, dns/*, allow
     - p, proj:dns:dns-editor, exec, create, dns/*, allow
+    - p, proj:dns:dns-editor, logs, get, dns/*, allow  
     groups:
     - dns-editor
 
@@ -85,7 +86,8 @@ spec:
     - p, proj:dns:dns-dev-editor, applications, get, dns-dev/*, allow
     - p, proj:dns:dns-dev-editor, applications, update, dns-dev/*, allow
     - p, proj:dns:dns-dev-editor, applications, sync, dns-dev/*, allow
-    - p, proj:dns:dns-dev-editor, exec, create, dns-dev/*, allow    
+    - p, proj:dns:dns-dev-editor, exec, create, dns-dev/*, allow   
+    - p, proj:dns:dns-dev-editor, logs, get, dns-dev/*, allow  
     groups:
     - dns-dev-editor
 
@@ -96,6 +98,7 @@ spec:
     - p, proj:dns:dns-stage-editor, applications, update, dns-stage/*, allow
     - p, proj:dns:dns-stage-editor, applications, sync, dns-stage/*, allow
     - p, proj:dns:dns-stage-editor, exec, create, dns-stage/*, allow    
+    - p, proj:dns:dns-stage-editor, logs, get, dns-stage/*, allow  
     groups:
     - dns-stage-editor
 
@@ -105,7 +108,9 @@ spec:
     - p, proj:dns:dns-prod-editor, applications, get, dns-prod/*, allow
     - p, proj:dns:dns-prod-editor, applications, update, dns-prod/*, allow
     - p, proj:dns:dns-prod-editor, applications, sync, dns-prod/*, allow
-    - p, proj:dns:dns-prod-editor, exec, create, dns-prod/*, allow    
+    - p, proj:dns:dns-prod-editor, exec, create, dns-prod/*, allow  
+    - p, proj:dns:dns-prod-editor, logs, get, dns-prod/*, allow  
+      
     groups:
     - dns-prod-editor    
 
@@ -116,7 +121,7 @@ spec:
     policies:
     - p, proj:dns:dns-admin, applications, *, dns/*, allow
     - p, proj:dns:dns-admin, exec, create, dns/*, allow
-    - p, proj:dns:dns-admin, logs, get, */*, allow    
+    - p, proj:dns:dns-admin, logs, get, dns/*, allow    
     - p, proj:dns:dns-admin, applications, delete, dns/*, deny
     groups:
     - dns-admin
@@ -126,6 +131,7 @@ spec:
     policies:
     - p, proj:dns:dns-dev-admin, applications, *, dns-dev/*, allow
     - p, proj:dns:dns-dev-admin, exec, create, dns-dev/*, allow
+    - p, proj:dns:dns-dev-admin, logs, get, dns-dev/*, allow    
     - p, proj:dns:dns-dev-admin, applications, delete, dns-dev/*, deny
     groups:
     - dns-dev-admin
@@ -135,6 +141,7 @@ spec:
     policies:
     - p, proj:dns:dns-stage-admin, applications, *, dns-stage/*, allow
     - p, proj:dns:dns-stage-admin, exec, create, dns-stage/*, allow
+    - p, proj:dns:dns-stage-admin, logs, get, dns-stage/*, allow    
     - p, proj:dns:dns-stage-admin, applications, delete, dns-stage/*, deny
     groups:
     - dns-stage-admin  
@@ -144,6 +151,7 @@ spec:
     policies:
     - p, proj:dns:dns-prod-admin, applications, *, dns-prod/*, allow
     - p, proj:dns:dns-prod-admin, exec, create, dns-prod/*, allow
+    - p, proj:dns:dns-prod-admin, logs, get, dns-prod/*, allow    
     - p, proj:dns:dns-prod-admin, applications, delete, dns-prod/*, deny
     groups:
     - dns-prod-admin
