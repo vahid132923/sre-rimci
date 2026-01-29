@@ -115,6 +115,8 @@ spec:
     description: admin privileges to dns
     policies:
     - p, proj:dns:dns-admin, applications, *, dns/*, allow
+    - p, proj:dns:dns-admin, exec, create, dns/*, allow
+    - p, proj:dns:dns-admin, applications/logs, get, */*, allow    
     - p, proj:dns:dns-admin, applications, delete, dns/*, deny
     groups:
     - dns-admin
@@ -123,6 +125,7 @@ spec:
     description: admin privileges to dns
     policies:
     - p, proj:dns:dns-dev-admin, applications, *, dns-dev/*, allow
+    - p, proj:dns:dns-dev-admin, exec, create, dns-dev/*, allow
     - p, proj:dns:dns-dev-admin, applications, delete, dns-dev/*, deny
     groups:
     - dns-dev-admin
@@ -131,6 +134,7 @@ spec:
     description: admin privileges to dns
     policies:
     - p, proj:dns:dns-stage-admin, applications, *, dns-stage/*, allow
+    - p, proj:dns:dns-stage-admin, exec, create, dns-stage/*, allow
     - p, proj:dns:dns-stage-admin, applications, delete, dns-stage/*, deny
     groups:
     - dns-stage-admin  
@@ -139,6 +143,7 @@ spec:
     description: admin privileges to dns
     policies:
     - p, proj:dns:dns-prod-admin, applications, *, dns-prod/*, allow
+    - p, proj:dns:dns-prod-admin, exec, create, dns-prod/*, allow
     - p, proj:dns:dns-prod-admin, applications, delete, dns-prod/*, deny
     groups:
     - dns-prod-admin
