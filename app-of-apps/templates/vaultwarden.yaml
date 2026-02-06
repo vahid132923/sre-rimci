@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-500"
+  name: {{ .Values.spec.env }}-vaultwarden
+  namespace: argocd
+ 
+spec:
+  destination:
+    namespace: vaultwarden
+    server: {{ .Values.spec.destination.server }}
+  project: {{ .Values.spec.destination.project }}
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=orphan
+      - ServerSideApply=true
+  source:
+    repoURL: 'https://gissilabs.github.io/charts/'
+    targetRevision: "1.3.0"
+    chart: "vaultwarden"
+    helm:
+      values: |
+        vaultwarden:
+          domain: "https://secret.rimci.dev"
+          allowSignups: false
+          extraEnv: {}
+          admin:
+            enabled: true
+            disableAdminToken: false
+            token: ""
+            existingSecret: ""
+          emergency:
+            enabled: false
+            reminder: "0 3 * * * *"
+            timeout: "0 7 * * * *"
+          icons:
+            service: duckduckgo
+        ingress:
+          enabled: true
+          className: "public"
+          host: "secret.rimci.dev"
+        persistence:
+          enabled: true
+          size: 2Gi
+          storageClass: "k8s-lvm-sc"
+        image:
+          repository: {{ .Values.spec.registry }}/vaultwarden/server
+        fullnameOverride: "vaultwarden"
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 500m
+          requests:
+            memory: 128Mi
+            cpu: 100m      
