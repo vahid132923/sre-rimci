@@ -27,7 +27,7 @@ spec:
       values: |
         vaultwarden:
           domain: "https://secret.rimci.dev"
-          allowSignups: true
+          allowSignups: false
           extraEnv: {}
           admin:
             enabled: true
