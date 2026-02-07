@@ -25,7 +25,10 @@ spec:
     name: prod-cluster  
   - namespace: '*'
     server: https://lbstage.rimci.dev:6443
-    name: stage-cluster      
+    name: stage-cluster  
+  - namespace: '*'
+    server: https://lb.rimci.dev:6443
+    name: tools-cluster      
 
   # Deny all cluster-scoped resources from being created, except for Namespace
   clusterResourceWhitelist:
@@ -120,9 +123,11 @@ spec:
     description: admin privileges to dns
     policies:
     - p, proj:dns:dns-admin, applications, *, dns/*, allow
+    - p, proj:dns:dns-admin, applications, *, dns/*, allow
     - p, proj:dns:dns-admin, exec, create, dns/*, allow
     - p, proj:dns:dns-admin, logs, get, dns/*, allow    
     - p, proj:dns:dns-admin, applications, delete, dns/*, deny
+    - p, proj:dns:dns-admin, applications, create, dns/*, deny
     groups:
     - dns-admin
 
@@ -133,6 +138,7 @@ spec:
     - p, proj:dns:dns-dev-admin, exec, create, dns-dev/*, allow
     - p, proj:dns:dns-dev-admin, logs, get, dns-dev/*, allow    
     - p, proj:dns:dns-dev-admin, applications, delete, dns-dev/*, deny
+    - p, proj:dns:dns-dev-admin, applications, create, dns-dev/*, deny
     groups:
     - dns-dev-admin
 
@@ -143,6 +149,7 @@ spec:
     - p, proj:dns:dns-stage-admin, exec, create, dns-stage/*, allow
     - p, proj:dns:dns-stage-admin, logs, get, dns-stage/*, allow    
     - p, proj:dns:dns-stage-admin, applications, delete, dns-stage/*, deny
+    - p, proj:dns:dns-stage-admin, applications, create, dns-stage/*, deny
     groups:
     - dns-stage-admin  
 
@@ -153,6 +160,7 @@ spec:
     - p, proj:dns:dns-prod-admin, exec, create, dns-prod/*, allow
     - p, proj:dns:dns-prod-admin, logs, get, dns-prod/*, allow    
     - p, proj:dns:dns-prod-admin, applications, delete, dns-prod/*, deny
+    - p, proj:dns:dns-prod-admin, applications, create, dns-prod/*, deny
     groups:
     - dns-prod-admin
 
@@ -168,4 +176,5 @@ spec:
   # When using Applications-in-any-namespace, this field determines which namespaces this AppProject permits
   # Applications to reside in. Details: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
   sourceNamespaces:
+
   - "argocd-apps-*"
