@@ -50,6 +50,7 @@ spec:
           storageClass: "k8s-lvm-sc"
         image:
           repository: {{ .Values.spec.registry }}/vaultwarden/server
+          tag: 1.35.2-alpine
         fullnameOverride: "vaultwarden"
         resources:
           limits:
