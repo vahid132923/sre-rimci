@@ -146,7 +146,7 @@ spec:
           storageClass: "k8s-lvm-sc"
         image:
            repository: haxqer/confluence
-           tag: 8.9.8
+           tag: 10.0.2
         updateStrategy:
            type: RollingUpdate  
            rollingUpdate:
@@ -191,7 +191,7 @@ spec:
            enabled: true
            hostname: docs.rimci.dev
            annotations:
-              nginx.ingress.kubernetes.io/proxy-body-size: 100m
+              nginx.ingress.kubernetes.io/proxy-body-size: 200m
               nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
               nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
               nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"  
@@ -339,3 +339,4 @@ spec:
               memory: 500Mi                                
           service:
             type: ClusterIP
+
