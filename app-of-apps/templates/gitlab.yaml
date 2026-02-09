@@ -353,29 +353,29 @@ spec:
             data:
              connection: |
                [default]
-               access_key = 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
-               secret_key = ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               access_key = backup
+               secret_key = A7<KbbhD:r35gFr25<yO5#
                use_https = False
                signature_v2 = False
-               host_base = 192.168.200.100:6000
-               host_bucket = 192.168.200.100:6000
-               website_endpoint = https://192.168.200.100:6000
+               host_base = 172.16.10.20:9000
+               host_bucket = 172.16.10.20:9000
+               website_endpoint = http://172.16.10.20:9000
           - name: gitlab-artifact-s3
             data:
              connection: |
                provider: AWS
                region: minio
-               aws_access_key_id: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
-               aws_secret_access_key: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               aws_access_key_id: backup
+               aws_secret_access_key: A7<KbbhD:r35gFr25<yO5#
                aws_signature_version: 4
-               host: 192.168.200.100:6000
-               endpoint: "http://192.168.200.100:6000"
+               host: 172.16.10.20:9000
+               endpoint: "http://172.16.10.20:9000"
                path_style: true
   
           - name: aws-creds
             data:
-                ACCESS_KEY_ID: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
-                ACCESS_SECRET_KEY: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty   
+                ACCESS_KEY_ID: backup
+                ACCESS_SECRET_KEY: A7<KbbhD:r35gFr25<yO5#   
           - name: keycloak-oauth2
             data:
               provider: |
