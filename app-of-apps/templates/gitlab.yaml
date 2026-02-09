@@ -357,9 +357,9 @@ spec:
                secret_key = A7<KbbhD:r35gFr25<yO5#
                use_https = False
                signature_v2 = False
-               host_base = 172.16.10.20:9000
-               host_bucket = 172.16.10.20:9000
-               website_endpoint = http://172.16.10.20:9000
+               host_base = 172.16.10.21:9000
+               host_bucket = 172.16.10.21:9000
+               website_endpoint = http://172.16.10.21:9000
           - name: gitlab-artifact-s3
             data:
              connection: |
@@ -368,8 +368,8 @@ spec:
                aws_access_key_id: backup
                aws_secret_access_key: A7<KbbhD:r35gFr25<yO5#
                aws_signature_version: 4
-               host: 172.16.10.20:9000
-               endpoint: "http://172.16.10.20:9000"
+               host: 172.16.10.21:9000
+               endpoint: "http://172.16.10.21:9000"
                path_style: true
   
           - name: aws-creds
