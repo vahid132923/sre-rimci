@@ -34,7 +34,7 @@ spec:
   clusterResourceWhitelist:
   - group: ''
     kind: Namespace
-  - group: *
+  - group: '*'
     kind: CustomResourceDefinition  
 
 
