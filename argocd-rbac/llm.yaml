@@ -32,10 +32,8 @@ spec:
 
   # Deny all cluster-scoped resources from being created, except for Namespace
   clusterResourceWhitelist:
-  - group: ''
-    kind: Namespace
   - group: '*'
-    kind: CustomResourceDefinition  
+    kind: '*'
 
 
   # Enables namespace orphaned resource monitoring.
