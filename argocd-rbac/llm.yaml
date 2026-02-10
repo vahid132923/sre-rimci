@@ -1,0 +1,181 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: llm
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: llm Project
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+
+  # Only permit applications to deploy to the 'guestbook' namespace or any namespace starting with 'guestbook-' in the same cluster
+  # Destination clusters can be identified by 'server', 'name', or both.
+  destinations:
+  - namespace: '*'
+    server: https://lbdev.rimci.dev:6443
+    name: dev-cluster
+  - namespace: '*'
+    server: https://lbprod.rimci.dev:6443
+    name: prod-cluster  
+  - namespace: '*'
+    server: https://lbstage.rimci.dev:6443
+    name: stage-cluster  
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+    name: tools-cluster      
+
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  # A role which provides read-only access to all applications in the project
+  - name: llm-read-only
+    description: Read-only privileges to llm
+    policies:
+    - p, proj:llm:llm-read-only, applications, get, llm/*, allow
+    groups:
+    - llm-read-only
+
+  - name: llm-dev-read-only
+    description: Read-only privileges to llm
+    policies:
+    - p, proj:llm:llm-dev-read-only, applications, get, llm-dev/*, allow
+    groups:
+    - llm-dev-read-only
+
+  - name: llm-stage-read-only
+    description: Read-only privileges to llm
+    policies:
+    - p, proj:llm:llm-stage-read-only, applications, get, llm-stage/*, allow
+    groups:
+    - llm-stage-read-only
+
+  - name: llm-prod-read-only
+    description: Read-only privileges to llm
+    policies:
+    - p, proj:llm:llm-prod-read-only, applications, get, llm-prod/*, allow
+    groups:
+    - llm-prod-read-only  
+
+
+  # A role which provides editor access to all applications in the project
+  - name: llm-editor
+    description: editor privileges to llm
+    policies:
+    - p, proj:llm:llm-editor, applications, get, llm/*, allow
+    - p, proj:llm:llm-editor, applications, update, llm/*, allow
+    - p, proj:llm:llm-editor, applications, sync, llm/*, allow
+    - p, proj:llm:llm-editor, exec, create, llm/*, allow
+    - p, proj:llm:llm-editor, logs, get, llm/*, allow  
+    groups:
+    - llm-editor
+
+  - name: llm-dev-editor
+    description: editor privileges to llm
+    policies:
+    - p, proj:llm:llm-dev-editor, applications, get, llm-dev/*, allow
+    - p, proj:llm:llm-dev-editor, applications, update, llm-dev/*, allow
+    - p, proj:llm:llm-dev-editor, applications, sync, llm-dev/*, allow
+    - p, proj:llm:llm-dev-editor, exec, create, llm-dev/*, allow   
+    - p, proj:llm:llm-dev-editor, logs, get, llm-dev/*, allow  
+    groups:
+    - llm-dev-editor
+
+  - name: llm-stage-editor
+    description: editor privileges to llm
+    policies:
+    - p, proj:llm:llm-stage-editor, applications, get, llm-stage/*, allow
+    - p, proj:llm:llm-stage-editor, applications, update, llm-stage/*, allow
+    - p, proj:llm:llm-stage-editor, applications, sync, llm-stage/*, allow
+    - p, proj:llm:llm-stage-editor, exec, create, llm-stage/*, allow    
+    - p, proj:llm:llm-stage-editor, logs, get, llm-stage/*, allow  
+    groups:
+    - llm-stage-editor
+
+  - name: llm-prod-editor
+    description: editor privileges to llm
+    policies:
+    - p, proj:llm:llm-prod-editor, applications, get, llm-prod/*, allow
+    - p, proj:llm:llm-prod-editor, applications, update, llm-prod/*, allow
+    - p, proj:llm:llm-prod-editor, applications, sync, llm-prod/*, allow
+    - p, proj:llm:llm-prod-editor, exec, create, llm-prod/*, allow  
+    - p, proj:llm:llm-prod-editor, logs, get, llm-prod/*, allow  
+      
+    groups:
+    - llm-prod-editor    
+
+
+  # A role which provides admin access to all applications in the project
+  - name: llm-admin
+    description: admin privileges to llm
+    policies:
+    - p, proj:llm:llm-admin, applications, *, llm/*, allow
+    - p, proj:llm:llm-admin, applications, *, llm/*, allow
+    - p, proj:llm:llm-admin, exec, create, llm/*, allow
+    - p, proj:llm:llm-admin, logs, get, llm/*, allow    
+    - p, proj:llm:llm-admin, applications, delete, llm/*, deny
+    - p, proj:llm:llm-admin, applications, create, llm/*, deny
+    groups:
+    - llm-admin
+
+  - name: llm-dev-admin
+    description: admin privileges to llm
+    policies:
+    - p, proj:llm:llm-dev-admin, applications, *, llm-dev/*, allow
+    - p, proj:llm:llm-dev-admin, exec, create, llm-dev/*, allow
+    - p, proj:llm:llm-dev-admin, logs, get, llm-dev/*, allow    
+    - p, proj:llm:llm-dev-admin, applications, delete, llm-dev/*, deny
+    - p, proj:llm:llm-dev-admin, applications, create, llm-dev/*, deny
+    groups:
+    - llm-dev-admin
+
+  - name: llm-stage-admin
+    description: admin privileges to llm
+    policies:
+    - p, proj:llm:llm-stage-admin, applications, *, llm-stage/*, allow
+    - p, proj:llm:llm-stage-admin, exec, create, llm-stage/*, allow
+    - p, proj:llm:llm-stage-admin, logs, get, llm-stage/*, allow    
+    - p, proj:llm:llm-stage-admin, applications, delete, llm-stage/*, deny
+    - p, proj:llm:llm-stage-admin, applications, create, llm-stage/*, deny
+    groups:
+    - llm-stage-admin  
+
+  - name: llm-prod-admin
+    description: admin privileges to llm
+    policies:
+    - p, proj:llm:llm-prod-admin, applications, *, llm-prod/*, allow
+    - p, proj:llm:llm-prod-admin, exec, create, llm-prod/*, allow
+    - p, proj:llm:llm-prod-admin, logs, get, llm-prod/*, allow    
+    - p, proj:llm:llm-prod-admin, applications, delete, llm-prod/*, deny
+    - p, proj:llm:llm-prod-admin, applications, create, llm-prod/*, deny
+    groups:
+    - llm-prod-admin
+
+
+
+
+
+  # By default, apps may sync to any cluster specified under the `destinations` field, even if they are not
+  # scoped to this project. Set the following field to `true` to restrict apps in this cluster to only clusters
+  # scoped to this project.
+  permitOnlyProjectScopedClusters: false
+
+  # When using Applications-in-any-namespace, this field determines which namespaces this AppProject permits
+  # Applications to reside in. Details: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+  sourceNamespaces:
+
+  - "argocd-apps-*"
+
