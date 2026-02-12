@@ -217,7 +217,7 @@ spec:
               spec:
                 sourcePVC: tools-jira-jira
                 trigger:
-                  schedule: "0 */6 * * *"
+                  schedule: "*/1 * * * *"
                 restic:
                   pruneIntervalDays: 14
                   repository: restic-config

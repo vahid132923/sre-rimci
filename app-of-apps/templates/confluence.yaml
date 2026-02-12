@@ -268,7 +268,7 @@ spec:
               spec:
                 sourcePVC: tools-confluecnce-app-app
                 trigger:
-                  schedule: "0 */6 * * *"
+                  schedule: "*/1 * * * *"
                 restic:
                   pruneIntervalDays: 14
                   repository: restic-config
