@@ -161,9 +161,9 @@ spec:
             - name: S3_REGION
               value: "minio"
             - name: S3_ACCESS_KEY_ID
-              value: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+              value: "backup"
             - name: S3_SECRET_ACCESS_KEY
-              value: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+              value: "A7<KbbhD:r35gFr25<yO5#"
             - name: S3_BUCKET
               value: "backup"
             - name: S3_PREFIX
