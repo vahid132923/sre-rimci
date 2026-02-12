@@ -199,10 +199,10 @@ spec:
          Secrets:
          - name: restic-config
            data:
-               RESTIC_REPOSITORY: s3:http://192.168.200.100:6000/jira/files
+               RESTIC_REPOSITORY: s3:http://makhzan.rimci.dev:9000/backup/jira/files
                RESTIC_PASSWORD: my-secure-restic-password
-               AWS_ACCESS_KEY_ID: 7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh
-               AWS_SECRET_ACCESS_KEY: ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty
+               AWS_ACCESS_KEY_ID: backup
+               AWS_SECRET_ACCESS_KEY: A7<KbbhD:r35gFr25<yO5#
            type: Opaque          
   - repoURL: '{{ .Values.spec.source.helmURL }}'
     targetRevision: 0.1.0
@@ -243,7 +243,7 @@ spec:
              tag: 16
           extraEnvVars:
             - name: S3_ENDPOINT
-              value: http://192.168.200.100:6000
+              value: http://makhzan.rimci.dev:9000
             - name: SCHEDULE
               value:  '0 0 */6 * * *'
             - name: BACKUP_KEEP_DAYS
@@ -251,13 +251,13 @@ spec:
             - name: S3_REGION
               value: "minio"
             - name: S3_ACCESS_KEY_ID
-              value: "7Xsu50XzoQi91dLWCBQu2UOrb7ly9poh"
+              value: "backup"
             - name: S3_SECRET_ACCESS_KEY
-              value: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
+              value: "A7<KbbhD:r35gFr25<yO5#"
             - name: S3_BUCKET
-              value: "jira"
+              value: "backup"
             - name: S3_PREFIX
-              value: "db"
+              value: "jira/db"
             - name: POSTGRES_HOST
               valueFrom:
                secretKeyRef:

@@ -153,7 +153,7 @@ spec:
              tag: 16
           extraEnvVars:
             - name: S3_ENDPOINT
-              value: http://192.168.200.100:6000
+              value: http://makhzan.rimci.dev:9000
             - name: SCHEDULE
               value:  '0 0 */6 * * *'
             - name: BACKUP_KEEP_DAYS
@@ -165,9 +165,9 @@ spec:
             - name: S3_SECRET_ACCESS_KEY
               value: "ZzbddQQSgDHrxWscxLI7PsLNTKoX4Wty"
             - name: S3_BUCKET
-              value: "keycloakx"
+              value: "backup"
             - name: S3_PREFIX
-              value: "db"
+              value: "keycloakx/db"
             - name: POSTGRES_HOST
               valueFrom:
                secretKeyRef:
