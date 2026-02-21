@@ -662,9 +662,9 @@ spec:
           image:
             registry: {{ .Values.spec.registry }}
             image: gitlab-org/gitlab-runner
-          replicas: 5
+          replicas: 8
           gitlabUrl: https://git.rimci.dev
-          concurrent: 10
+          concurrent: 20
           runners:
             config: |
               [[runners]]
