@@ -1,0 +1,180 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dbs
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: dbs Project
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+
+  # Only permit applications to deploy to the 'guestbook' namespace or any namespace starting with 'guestbook-' in the same cluster
+  # Destination clusters can be identified by 'server', 'name', or both.
+  destinations:
+  - namespace: '*'
+    server: https://lbdev.rimci.dev:6443
+    name: dev-cluster
+  - namespace: '*'
+    server: https://lbprod.rimci.dev:6443
+    name: prod-cluster  
+  - namespace: '*'
+    server: https://lbstage.rimci.dev:6443
+    name: stage-cluster  
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+    name: tools-cluster      
+
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  # A role which provides read-only access to all applications in the project
+  - name: dbs-read-only
+    description: Read-only privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-read-only, applications, get, dbs/*, allow
+    groups:
+    - dbs-read-only
+
+  - name: dbs-dev-read-only
+    description: Read-only privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-dev-read-only, applications, get, dbs-dev/*, allow
+    groups:
+    - dbs-dev-read-only
+
+  - name: dbs-stage-read-only
+    description: Read-only privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-stage-read-only, applications, get, dbs-stage/*, allow
+    groups:
+    - dbs-stage-read-only
+
+  - name: dbs-prod-read-only
+    description: Read-only privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-prod-read-only, applications, get, dbs-prod/*, allow
+    groups:
+    - dbs-prod-read-only  
+
+
+  # A role which provides editor access to all applications in the project
+  - name: dbs-editor
+    description: editor privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-editor, applications, get, dbs/*, allow
+    - p, proj:dbs:dbs-editor, applications, update, dbs/*, allow
+    - p, proj:dbs:dbs-editor, applications, sync, dbs/*, allow
+    - p, proj:dbs:dbs-editor, exec, create, dbs/*, allow
+    - p, proj:dbs:dbs-editor, logs, get, dbs/*, allow  
+    groups:
+    - dbs-editor
+
+  - name: dbs-dev-editor
+    description: editor privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-dev-editor, applications, get, dbs-dev/*, allow
+    - p, proj:dbs:dbs-dev-editor, applications, update, dbs-dev/*, allow
+    - p, proj:dbs:dbs-dev-editor, applications, sync, dbs-dev/*, allow
+    - p, proj:dbs:dbs-dev-editor, exec, create, dbs-dev/*, allow   
+    - p, proj:dbs:dbs-dev-editor, logs, get, dbs-dev/*, allow  
+    groups:
+    - dbs-dev-editor
+
+  - name: dbs-stage-editor
+    description: editor privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-stage-editor, applications, get, dbs-stage/*, allow
+    - p, proj:dbs:dbs-stage-editor, applications, update, dbs-stage/*, allow
+    - p, proj:dbs:dbs-stage-editor, applications, sync, dbs-stage/*, allow
+    - p, proj:dbs:dbs-stage-editor, exec, create, dbs-stage/*, allow    
+    - p, proj:dbs:dbs-stage-editor, logs, get, dbs-stage/*, allow  
+    groups:
+    - dbs-stage-editor
+
+  - name: dbs-prod-editor
+    description: editor privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-prod-editor, applications, get, dbs-prod/*, allow
+    - p, proj:dbs:dbs-prod-editor, applications, update, dbs-prod/*, allow
+    - p, proj:dbs:dbs-prod-editor, applications, sync, dbs-prod/*, allow
+    - p, proj:dbs:dbs-prod-editor, exec, create, dbs-prod/*, allow  
+    - p, proj:dbs:dbs-prod-editor, logs, get, dbs-prod/*, allow  
+      
+    groups:
+    - dbs-prod-editor    
+
+
+  # A role which provides admin access to all applications in the project
+  - name: dbs-admin
+    description: admin privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-admin, applications, *, dbs/*, allow
+    - p, proj:dbs:dbs-admin, applications, *, dbs/*, allow
+    - p, proj:dbs:dbs-admin, exec, create, dbs/*, allow
+    - p, proj:dbs:dbs-admin, logs, get, dbs/*, allow    
+    - p, proj:dbs:dbs-admin, applications, delete, dbs/*, deny
+    - p, proj:dbs:dbs-admin, applications, create, dbs/*, deny
+    groups:
+    - dbs-admin
+
+  - name: dbs-dev-admin
+    description: admin privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-dev-admin, applications, *, dbs-dev/*, allow
+    - p, proj:dbs:dbs-dev-admin, exec, create, dbs-dev/*, allow
+    - p, proj:dbs:dbs-dev-admin, logs, get, dbs-dev/*, allow    
+    - p, proj:dbs:dbs-dev-admin, applications, delete, dbs-dev/*, deny
+    - p, proj:dbs:dbs-dev-admin, applications, create, dbs-dev/*, deny
+    groups:
+    - dbs-dev-admin
+
+  - name: dbs-stage-admin
+    description: admin privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-stage-admin, applications, *, dbs-stage/*, allow
+    - p, proj:dbs:dbs-stage-admin, exec, create, dbs-stage/*, allow
+    - p, proj:dbs:dbs-stage-admin, logs, get, dbs-stage/*, allow    
+    - p, proj:dbs:dbs-stage-admin, applications, delete, dbs-stage/*, deny
+    - p, proj:dbs:dbs-stage-admin, applications, create, dbs-stage/*, deny
+    groups:
+    - dbs-stage-admin  
+
+  - name: dbs-prod-admin
+    description: admin privileges to dbs
+    policies:
+    - p, proj:dbs:dbs-prod-admin, applications, *, dbs-prod/*, allow
+    - p, proj:dbs:dbs-prod-admin, exec, create, dbs-prod/*, allow
+    - p, proj:dbs:dbs-prod-admin, logs, get, dbs-prod/*, allow    
+    - p, proj:dbs:dbs-prod-admin, applications, delete, dbs-prod/*, deny
+    - p, proj:dbs:dbs-prod-admin, applications, create, dbs-prod/*, deny
+    groups:
+    - dbs-prod-admin
+
+
+
+
+
+  # By default, apps may sync to any cluster specified under the `destinations` field, even if they are not
+  # scoped to this project. Set the following field to `true` to restrict apps in this cluster to only clusters
+  # scoped to this project.
+  permitOnlyProjectScopedClusters: false
+
+  # When using Applications-in-any-namespace, this field determines which namespaces this AppProject permits
+  # Applications to reside in. Details: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+  sourceNamespaces:
+
+  - "argocd-apps-*"
