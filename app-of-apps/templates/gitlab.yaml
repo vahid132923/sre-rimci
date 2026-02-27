@@ -672,7 +672,7 @@ spec:
                  clone_url = "https://git.rimci.dev" 
                 [runners.kubernetes]
                   namespace = "gitlab"
-                  image = "{{ .Values.spec.registry }}/alpine"
+                  image = "{{ .Values.spec.registry }}/alpine/git:v2.52.0"
                   helper_image = "{{ .Values.spec.registry }}/gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-436955cb"
                   [runners.kubernetes.build_container_security_context]
                     [runners.kubernetes.build_container_security_context.capabilities]
