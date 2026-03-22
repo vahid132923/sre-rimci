@@ -1,0 +1,180 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sobhan
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: sobhan Project
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+
+  # Only permit applications to deploy to the 'guestbook' namespace or any namespace starting with 'guestbook-' in the same cluster
+  # Destination clusters can be identified by 'server', 'name', or both.
+  destinations:
+  - namespace: '*'
+    server: https://lbdev.rimci.dev:6443
+    name: dev-cluster
+  - namespace: '*'
+    server: https://lbprod.rimci.dev:6443
+    name: prod-cluster  
+  - namespace: '*'
+    server: https://lbstage.rimci.dev:6443
+    name: stage-cluster  
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+    name: tools-cluster      
+
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  # A role which provides read-only access to all applications in the project
+  - name: sobhan-read-only
+    description: Read-only privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-read-only, applications, get, sobhan/*, allow
+    groups:
+    - sobhan-read-only
+
+  - name: sobhan-dev-read-only
+    description: Read-only privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-dev-read-only, applications, get, sobhan-dev/*, allow
+    groups:
+    - sobhan-dev-read-only
+
+  - name: sobhan-stage-read-only
+    description: Read-only privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-stage-read-only, applications, get, sobhan-stage/*, allow
+    groups:
+    - sobhan-stage-read-only
+
+  - name: sobhan-prod-read-only
+    description: Read-only privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-prod-read-only, applications, get, sobhan-prod/*, allow
+    groups:
+    - sobhan-prod-read-only  
+
+
+  # A role which provides editor access to all applications in the project
+  - name: sobhan-editor
+    description: editor privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-editor, applications, get, sobhan/*, allow
+    - p, proj:sobhan:sobhan-editor, applications, update, sobhan/*, allow
+    - p, proj:sobhan:sobhan-editor, applications, sync, sobhan/*, allow
+    - p, proj:sobhan:sobhan-editor, exec, create, sobhan/*, allow
+    - p, proj:sobhan:sobhan-editor, logs, get, sobhan/*, allow  
+    groups:
+    - sobhan-editor
+
+  - name: sobhan-dev-editor
+    description: editor privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-dev-editor, applications, get, sobhan-dev/*, allow
+    - p, proj:sobhan:sobhan-dev-editor, applications, update, sobhan-dev/*, allow
+    - p, proj:sobhan:sobhan-dev-editor, applications, sync, sobhan-dev/*, allow
+    - p, proj:sobhan:sobhan-dev-editor, exec, create, sobhan-dev/*, allow   
+    - p, proj:sobhan:sobhan-dev-editor, logs, get, sobhan-dev/*, allow  
+    groups:
+    - sobhan-dev-editor
+
+  - name: sobhan-stage-editor
+    description: editor privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-stage-editor, applications, get, sobhan-stage/*, allow
+    - p, proj:sobhan:sobhan-stage-editor, applications, update, sobhan-stage/*, allow
+    - p, proj:sobhan:sobhan-stage-editor, applications, sync, sobhan-stage/*, allow
+    - p, proj:sobhan:sobhan-stage-editor, exec, create, sobhan-stage/*, allow    
+    - p, proj:sobhan:sobhan-stage-editor, logs, get, sobhan-stage/*, allow  
+    groups:
+    - sobhan-stage-editor
+
+  - name: sobhan-prod-editor
+    description: editor privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-prod-editor, applications, get, sobhan-prod/*, allow
+    - p, proj:sobhan:sobhan-prod-editor, applications, update, sobhan-prod/*, allow
+    - p, proj:sobhan:sobhan-prod-editor, applications, sync, sobhan-prod/*, allow
+    - p, proj:sobhan:sobhan-prod-editor, exec, create, sobhan-prod/*, allow  
+    - p, proj:sobhan:sobhan-prod-editor, logs, get, sobhan-prod/*, allow  
+      
+    groups:
+    - sobhan-prod-editor    
+
+
+  # A role which provides admin access to all applications in the project
+  - name: sobhan-admin
+    description: admin privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-admin, applications, *, sobhan/*, allow
+    - p, proj:sobhan:sobhan-admin, applications, *, sobhan/*, allow
+    - p, proj:sobhan:sobhan-admin, exec, create, sobhan/*, allow
+    - p, proj:sobhan:sobhan-admin, logs, get, sobhan/*, allow    
+    - p, proj:sobhan:sobhan-admin, applications, delete, sobhan/*, deny
+    - p, proj:sobhan:sobhan-admin, applications, create, sobhan/*, deny
+    groups:
+    - sobhan-admin
+
+  - name: sobhan-dev-admin
+    description: admin privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-dev-admin, applications, *, sobhan-dev/*, allow
+    - p, proj:sobhan:sobhan-dev-admin, exec, create, sobhan-dev/*, allow
+    - p, proj:sobhan:sobhan-dev-admin, logs, get, sobhan-dev/*, allow    
+    - p, proj:sobhan:sobhan-dev-admin, applications, delete, sobhan-dev/*, deny
+    - p, proj:sobhan:sobhan-dev-admin, applications, create, sobhan-dev/*, deny
+    groups:
+    - sobhan-dev-admin
+
+  - name: sobhan-stage-admin
+    description: admin privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-stage-admin, applications, *, sobhan-stage/*, allow
+    - p, proj:sobhan:sobhan-stage-admin, exec, create, sobhan-stage/*, allow
+    - p, proj:sobhan:sobhan-stage-admin, logs, get, sobhan-stage/*, allow    
+    - p, proj:sobhan:sobhan-stage-admin, applications, delete, sobhan-stage/*, deny
+    - p, proj:sobhan:sobhan-stage-admin, applications, create, sobhan-stage/*, deny
+    groups:
+    - sobhan-stage-admin  
+
+  - name: sobhan-prod-admin
+    description: admin privileges to sobhan
+    policies:
+    - p, proj:sobhan:sobhan-prod-admin, applications, *, sobhan-prod/*, allow
+    - p, proj:sobhan:sobhan-prod-admin, exec, create, sobhan-prod/*, allow
+    - p, proj:sobhan:sobhan-prod-admin, logs, get, sobhan-prod/*, allow    
+    - p, proj:sobhan:sobhan-prod-admin, applications, delete, sobhan-prod/*, deny
+    - p, proj:sobhan:sobhan-prod-admin, applications, create, sobhan-prod/*, deny
+    groups:
+    - sobhan-prod-admin
+
+
+
+
+
+  # By default, apps may sync to any cluster specified under the `destinations` field, even if they are not
+  # scoped to this project. Set the following field to `true` to restrict apps in this cluster to only clusters
+  # scoped to this project.
+  permitOnlyProjectScopedClusters: false
+
+  # When using Applications-in-any-namespace, this field determines which namespaces this AppProject permits
+  # Applications to reside in. Details: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+  sourceNamespaces:
+
+  - "argocd-apps-*"
