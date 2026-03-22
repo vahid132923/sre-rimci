@@ -1,0 +1,180 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: naft
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: naft Project
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+
+  # Only permit applications to deploy to the 'guestbook' namespace or any namespace starting with 'guestbook-' in the same cluster
+  # Destination clusters can be identified by 'server', 'name', or both.
+  destinations:
+  - namespace: '*'
+    server: https://lbdev.rimci.dev:6443
+    name: dev-cluster
+  - namespace: '*'
+    server: https://lbprod.rimci.dev:6443
+    name: prod-cluster  
+  - namespace: '*'
+    server: https://lbstage.rimci.dev:6443
+    name: stage-cluster  
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+    name: tools-cluster      
+
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  # A role which provides read-only access to all applications in the project
+  - name: naft-read-only
+    description: Read-only privileges to naft
+    policies:
+    - p, proj:naft:naft-read-only, applications, get, naft/*, allow
+    groups:
+    - naft-read-only
+
+  - name: naft-dev-read-only
+    description: Read-only privileges to naft
+    policies:
+    - p, proj:naft:naft-dev-read-only, applications, get, naft-dev/*, allow
+    groups:
+    - naft-dev-read-only
+
+  - name: naft-stage-read-only
+    description: Read-only privileges to naft
+    policies:
+    - p, proj:naft:naft-stage-read-only, applications, get, naft-stage/*, allow
+    groups:
+    - naft-stage-read-only
+
+  - name: naft-prod-read-only
+    description: Read-only privileges to naft
+    policies:
+    - p, proj:naft:naft-prod-read-only, applications, get, naft-prod/*, allow
+    groups:
+    - naft-prod-read-only  
+
+
+  # A role which provides editor access to all applications in the project
+  - name: naft-editor
+    description: editor privileges to naft
+    policies:
+    - p, proj:naft:naft-editor, applications, get, naft/*, allow
+    - p, proj:naft:naft-editor, applications, update, naft/*, allow
+    - p, proj:naft:naft-editor, applications, sync, naft/*, allow
+    - p, proj:naft:naft-editor, exec, create, naft/*, allow
+    - p, proj:naft:naft-editor, logs, get, naft/*, allow  
+    groups:
+    - naft-editor
+
+  - name: naft-dev-editor
+    description: editor privileges to naft
+    policies:
+    - p, proj:naft:naft-dev-editor, applications, get, naft-dev/*, allow
+    - p, proj:naft:naft-dev-editor, applications, update, naft-dev/*, allow
+    - p, proj:naft:naft-dev-editor, applications, sync, naft-dev/*, allow
+    - p, proj:naft:naft-dev-editor, exec, create, naft-dev/*, allow   
+    - p, proj:naft:naft-dev-editor, logs, get, naft-dev/*, allow  
+    groups:
+    - naft-dev-editor
+
+  - name: naft-stage-editor
+    description: editor privileges to naft
+    policies:
+    - p, proj:naft:naft-stage-editor, applications, get, naft-stage/*, allow
+    - p, proj:naft:naft-stage-editor, applications, update, naft-stage/*, allow
+    - p, proj:naft:naft-stage-editor, applications, sync, naft-stage/*, allow
+    - p, proj:naft:naft-stage-editor, exec, create, naft-stage/*, allow    
+    - p, proj:naft:naft-stage-editor, logs, get, naft-stage/*, allow  
+    groups:
+    - naft-stage-editor
+
+  - name: naft-prod-editor
+    description: editor privileges to naft
+    policies:
+    - p, proj:naft:naft-prod-editor, applications, get, naft-prod/*, allow
+    - p, proj:naft:naft-prod-editor, applications, update, naft-prod/*, allow
+    - p, proj:naft:naft-prod-editor, applications, sync, naft-prod/*, allow
+    - p, proj:naft:naft-prod-editor, exec, create, naft-prod/*, allow  
+    - p, proj:naft:naft-prod-editor, logs, get, naft-prod/*, allow  
+      
+    groups:
+    - naft-prod-editor    
+
+
+  # A role which provides admin access to all applications in the project
+  - name: naft-admin
+    description: admin privileges to naft
+    policies:
+    - p, proj:naft:naft-admin, applications, *, naft/*, allow
+    - p, proj:naft:naft-admin, applications, *, naft/*, allow
+    - p, proj:naft:naft-admin, exec, create, naft/*, allow
+    - p, proj:naft:naft-admin, logs, get, naft/*, allow    
+    - p, proj:naft:naft-admin, applications, delete, naft/*, deny
+    - p, proj:naft:naft-admin, applications, create, naft/*, deny
+    groups:
+    - naft-admin
+
+  - name: naft-dev-admin
+    description: admin privileges to naft
+    policies:
+    - p, proj:naft:naft-dev-admin, applications, *, naft-dev/*, allow
+    - p, proj:naft:naft-dev-admin, exec, create, naft-dev/*, allow
+    - p, proj:naft:naft-dev-admin, logs, get, naft-dev/*, allow    
+    - p, proj:naft:naft-dev-admin, applications, delete, naft-dev/*, deny
+    - p, proj:naft:naft-dev-admin, applications, create, naft-dev/*, deny
+    groups:
+    - naft-dev-admin
+
+  - name: naft-stage-admin
+    description: admin privileges to naft
+    policies:
+    - p, proj:naft:naft-stage-admin, applications, *, naft-stage/*, allow
+    - p, proj:naft:naft-stage-admin, exec, create, naft-stage/*, allow
+    - p, proj:naft:naft-stage-admin, logs, get, naft-stage/*, allow    
+    - p, proj:naft:naft-stage-admin, applications, delete, naft-stage/*, deny
+    - p, proj:naft:naft-stage-admin, applications, create, naft-stage/*, deny
+    groups:
+    - naft-stage-admin  
+
+  - name: naft-prod-admin
+    description: admin privileges to naft
+    policies:
+    - p, proj:naft:naft-prod-admin, applications, *, naft-prod/*, allow
+    - p, proj:naft:naft-prod-admin, exec, create, naft-prod/*, allow
+    - p, proj:naft:naft-prod-admin, logs, get, naft-prod/*, allow    
+    - p, proj:naft:naft-prod-admin, applications, delete, naft-prod/*, deny
+    - p, proj:naft:naft-prod-admin, applications, create, naft-prod/*, deny
+    groups:
+    - naft-prod-admin
+
+
+
+
+
+  # By default, apps may sync to any cluster specified under the `destinations` field, even if they are not
+  # scoped to this project. Set the following field to `true` to restrict apps in this cluster to only clusters
+  # scoped to this project.
+  permitOnlyProjectScopedClusters: false
+
+  # When using Applications-in-any-namespace, this field determines which namespaces this AppProject permits
+  # Applications to reside in. Details: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace/
+  sourceNamespaces:
+
+  - "argocd-apps-*"
