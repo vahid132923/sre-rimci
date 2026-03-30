@@ -80,15 +80,15 @@ spec:
           repository: {{ .Values.spec.registry }}/argoprojlabs/argocd-image-updater      
         extraEnv:
           - name: rimci_CRED
-            value: "admin:HTpIIYJgyJ3mhbNLdBF0"        
+            value: "admin:pcRbFXOhg7WSzdWDzi2GzFKsapBuKf"        
         config:
           registries: 
            - name: rimciregistry
-             api_url: https://h.docker.rimci.dev
+             api_url: https://docker.rimci.dev
              ping: yes
              insecure: yes
              credentials: env:rimci_CRED
-             prefix: h.docker.rimci.dev 
+             prefix: docker.rimci.dev 
              credsexpire: 24h         
           logLevel: "debug"         
           gitCommitUser: "argo-image-updater"
@@ -102,4 +102,4 @@ spec:
           scripts:
             auth2.sh: |
               #!/bin/sh
-              echo "admin:HTpIIYJgyJ3mhbNLdBF0"         
+              echo "admin:pcRbFXOhg7WSzdWDzi2GzFKsapBuKf"         
