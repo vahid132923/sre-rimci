@@ -639,6 +639,7 @@ spec:
           redis:
             install: true
             global:
+              imageRegistry: "{{ .Values.spec.registry }}"
               storageClass: k8s-lvm-sc
           registry:
             enabled: false
