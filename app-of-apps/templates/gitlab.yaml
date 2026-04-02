@@ -668,27 +668,43 @@ spec:
           concurrent: 20
           runners:
             config: |
-              [[runners]]
-                 url = "https://git.rimci.dev"
-                 clone_url = "https://git.rimci.dev" 
-                [runners.kubernetes]
-                  namespace = "gitlab"
-                  image = "{{ .Values.spec.registry }}/alpine/git:v2.52.0"
-                  helper_image = "{{ .Values.spec.registry }}/gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-436955cb"
-                  [runners.kubernetes.build_container_security_context]
-                    [runners.kubernetes.build_container_security_context.capabilities]
-                      add = ["SETFCAP"] 
-                
-                # [runners.cache]
-                #   Type = "s3"
-                #   Path = "runner"
-                #   Shared = true
-                #   [runners.cache.s3]
-                #     ServerAddress = "s3.ir-thr-at1.arvanstorage.ir"
-                #     BucketName = "skyroom-git"
-                #     BucketLocation = "Simin"
-                #     Insecure = false
-                #     AuthenticationType = "access-key"
+                    [[runners]]
+                      name = "kubernetes-runner"
+                      url = "https://git.rimci.dev"
+                      clone_url = "https://git.rimci.dev"
+                      executor = "kubernetes"
+                      environment = [
+                        "STORAGE_DRIVER=vfs",
+                        "BUILDAH_FORMAT=docker",
+                        "BUILDAH_ISOLATION=chroot",
+                        "HOME=/var/lib/containers",          # <--- Sets the User Home to the Volume
+                        "XDG_DATA_HOME=/var/lib/containers"  # <--- Forces data storage here
+                      ]        
+                      [runners.feature_flags]
+                         FF_USE_ADAPTIVE_REQUEST_CONCURRENCY = true
+                      [runners.kubernetes]
+                        image = "repo.rimci.dev/public/alpine:latest"
+                        privileged = false     
+                        service_account_overwrite_allowed = ".*"
+                        namespace = "{{ .Release.Namespace }}"
+                        helper_image = "{{ .Values.spec.registry }}/gitlab/gitlab-runner-helper:x86_64-436955cb" 
+                        [runners.kubernetes.pod_annotations]
+                          "container.apparmor.security.beta.kubernetes.io/build" = "unconfined"
+                          "container.apparmor.security.beta.kubernetes.io/helper" = "unconfined"
+                        [[runners.kubernetes.volumes.empty_dir]]
+                          name = "container-storage"
+                          mount_path = "/var/lib/containers"
+                          medium = ""
+                        [runners.kubernetes.pod_security_context]
+                          fs_group = 1000
+                        [runners.kubernetes.build_container_security_context]
+                          run_as_user = 1000
+                          run_as_group = 1000
+                          cap_add = ["SETFCAP"]
+                          [runners.kubernetes.build_container_security_context.seccomp_profile]
+                             type = "Unconfined"
+              
+
             secret: gitlab-gitlab-runner-secret
           resources:
             limits:
