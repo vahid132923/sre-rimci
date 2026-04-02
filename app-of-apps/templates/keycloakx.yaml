@@ -141,13 +141,13 @@ spec:
           enabled: false
 
   - repoURL: '{{ .Values.spec.source.helmURL }}'
-    targetRevision: "13.2.12"
+    targetRevision: "13.2.15"
     chart: app
     helm:
       values: |-
           fullnameOverride: postgresbackup
           global:
-            imageRegistry: {{ .Values.spec.registry }}/
+            imageRegistry: {{ .Values.spec.registry }}
           image:
              repository: eeshugerman/postgres-backup-s3
              tag: 16
