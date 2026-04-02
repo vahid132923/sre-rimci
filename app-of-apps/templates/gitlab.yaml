@@ -684,7 +684,7 @@ spec:
                          FF_USE_ADAPTIVE_REQUEST_CONCURRENCY = true
                       [runners.kubernetes]
                         image = "docker.rimci.dev/alpine:latest"
-                        privileged = false     
+                        privileged = true     
                         service_account_overwrite_allowed = ".*"
                         namespace = "gitlab"
                         helper_image = "{{ .Values.spec.registry }}/gitlab/gitlab-runner-helper:x86_64-436955cb" 
