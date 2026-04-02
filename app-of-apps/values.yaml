@@ -6,5 +6,5 @@ spec:
     project: default
   source:
     repoURL: git@github.com:vahid132923/sre-rimci.git
-    helmURL: https://repo.rimci.dev/repository/helmhosted
+    helmURL: https://repo.rimci.dev/artifactory/helm
     targetRevision: HEAD
