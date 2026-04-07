@@ -184,6 +184,7 @@ spec:
           enabled: true  
           size: 10Gi
           mountPath: /var/confluence
+          storageClassName: "k8s-lvm-sc"
         service:
           type: ClusterIP
           ports:
