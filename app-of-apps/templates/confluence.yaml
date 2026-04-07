@@ -141,6 +141,7 @@ spec:
     chart: app
     helm:
       values: |-
+        fullnameOverride: "tools-confluecnce-app"
         global:
           imageRegistry: "{{ .Values.spec.registry }}/"
           storageClass: "k8s-lvm-sc"
