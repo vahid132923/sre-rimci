@@ -237,7 +237,7 @@ spec:
       values: |-
           fullnameOverride: postgresbackup
           global:
-            imageRegistry: {{ .Values.spec.registry }}/
+            imageRegistry: {{ .Values.spec.registry }}
           image:
              repository: eeshugerman/postgres-backup-s3
              tag: 16
