@@ -45,7 +45,7 @@ spec:
            image:
                  repository: {{ .Values.spec.registry }}/jetstack/cert-manager-startupapicheck
   - repoURL: '{{ .Values.spec.source.helmURL }}'
-    targetRevision: 1.0.0
+    targetRevision: 0.1.1
     chart: cert-manager-webhook-arvancloud
     helm:
       values: |
