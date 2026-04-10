@@ -54,4 +54,6 @@ spec:
           image:
             repository: {{ .Values.spec.registry }}/mohammadv184/cert-manager-webhook-arvancloud
           fullnameOverride: "webhook-arvancloud"
+          service:
+            port: 8443
           
