@@ -23,7 +23,7 @@ spec:
     targetRevision: HEAD
     repoURL: '{{ .Values.spec.source.repoURL }}'  
      
-  - repoURL: 'https://charts.jetstack.io'
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
     targetRevision: 1.16.2
     chart: cert-manager
     helm:
@@ -44,3 +44,14 @@ spec:
         startupapicheck:
            image:
                  repository: {{ .Values.spec.registry }}/jetstack/cert-manager-startupapicheck
+  - repoURL: '{{ .Values.spec.source.helmURL }}'
+    targetRevision: 1.0.0
+    chart: cert-manager-webhook-arvancloud
+    helm:
+      values: |
+          groupName: acme.arvancloud.ir
+          replicaCount: 1          
+          image:
+            repository: {{ .Values.spec.registry }}/mohammadv184/cert-manager-webhook-arvancloud
+          fullnameOverride: "webhook-arvancloud"
+          
