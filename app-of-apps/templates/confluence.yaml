@@ -155,6 +155,12 @@ spec:
              maxUnavailable: 100%              
         containerPorts:
           http: 8090
+        hostAliases:
+          - ip: 172.16.10.250
+            hostnames:
+              - sso.rimci.dev
+              - docs.rimci.dev
+                  
         containerSecurityContext:
             enabled: true
             seLinuxOptions: {}
